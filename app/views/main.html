@@ -1,0 +1,19 @@
+<div>
+  <div class="navbar navbar-default">
+    <span class="navbar-brand" href="#">Hackathon Democracy</span>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default navbar-btn" title="Create a new candidate"><span class="glyphicon glyphicon-plus"></span> Add Candidate</button>
+      <button type="button" class="btn btn-default navbar-btn" title="Reset the system"><span class="glyphicon glyphicon-trash"></span> Clear Data</button>
+    </div>
+  </div>
+  <h2>Candidates</h2>
+  <div ng-repeat="candidate in candidates" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{candidate.name}}</h3>
+    </div>
+    <div class="panel-body">
+      <p>{{candidate.description}}</p>
+      <button type="button" class="btn btn-default" title="Reset the system"><span class="glyphicon glyphicon-thumbs-up"></span> Vote</button>
+    </div>
+  </div>
+</div>
