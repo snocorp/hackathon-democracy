@@ -1,6 +1,8 @@
+/*jslint node: true, nomen: true, indent: 2 */
+
 var express = require('express'),
-    routes = require('./routes'),
-    path = require('path');
+  routes = require('./routes'),
+  path = require('path');
 
 var app = express();
 app.directory = __dirname;

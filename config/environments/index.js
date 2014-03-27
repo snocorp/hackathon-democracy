@@ -1,4 +1,8 @@
+/*jslint node: true, indent: 2 */
+
 module.exports = function (app) {
-    require('./development')(app);
-    require('./production')(app);
+  'use strict';
+  
+  require('./development')(app);
+  require('./production')(app);
 };

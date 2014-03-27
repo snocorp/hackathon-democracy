@@ -1,5 +1,5 @@
-// Generated on 2013-07-11 using generator-angular 0.3.0
-'use strict';
+/*jslint node: true, nomen: true, indent: 2 */
+
 var LIVERELOAD_PORT = 35729;
 var path = require('path');
 
@@ -10,6 +10,8 @@ var path = require('path');
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
+  'use strict';
+  
   // load all grunt tasks
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
   // show elapsed time at the end
