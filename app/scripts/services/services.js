@@ -7,11 +7,9 @@ democracyServices.factory('Candidate', ['$resource',
   function ($resource) {
     'use strict';
     
-    return $resource('/api/candidate/:id', {},
+    return $resource('/candidates/:id', {id: '@id'},
       {
-        'all': {
-          method: 'GET',
-          url: '/api/candidates',
+        'query': {
           isArray: true,
           transformResponse: function (data) {
             var response = JSON.parse(data);
