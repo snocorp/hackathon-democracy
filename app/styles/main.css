@@ -2,3 +2,7 @@ body {
     background: #fafafa;
     margin-top: 10px;
 }
+
+.form-group textarea {
+  resize: vertical;
+}

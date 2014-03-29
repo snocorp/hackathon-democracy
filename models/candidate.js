@@ -20,9 +20,7 @@ var mongoose = require('mongoose');
       if (err) {
         res.send({'error': err});
       } else {
-        res.send({
-          'content': candidates
-        });
+        res.send(candidates);
       }
     });
   }
@@ -45,9 +43,7 @@ var mongoose = require('mongoose');
       if (err) {
         res.send({'error': err});
       } else {
-        res.send({
-          'content': candidate
-        });
+        res.send(candidate);
       }
     });
   }
@@ -61,7 +57,20 @@ var mongoose = require('mongoose');
   }
 
   function destroy(req, res) {
-    res.send('destroy candidate ' + req.params.candidate);
+    Candidate.findById(req.params.candidate, function (err, candidate) {
+      res.set('Content-Type', 'application/json');
+      if (err) {
+        res.send({'error': err});
+      } else {
+        candidate.remove(function (err) {
+          if (err) {
+            res.send({'error': err});
+          } else {
+            res.send({'ok': true});
+          }
+        });
+      }
+    });
   }
 
   module.exports = {
