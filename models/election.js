@@ -5,64 +5,59 @@ var mongoose = require('mongoose');
 (function (module) {
   'use strict';
   
-  var candidateSchema, Candidate;
+  var electionSchema, Election;
   
-  candidateSchema = mongoose.Schema({
-    name: String,
-    description: String
+  electionSchema = mongoose.Schema({
+    name: String
   });
 
-  Candidate = mongoose.model('Candidate', candidateSchema);
+  Election = mongoose.model('Election', electionSchema);
   
   function index(req, res) {
-    Candidate.find(function (err, candidates) {
+    Election.find(function (err, elections) {
       res.set('Content-Type', 'application/json');
       if (err) {
         res.send({'error': err});
       } else {
-        res.send(candidates);
+        res.send(elections);
       }
     });
   }
 
   function create(req, res) {
-    var candidate, c = {};
+    var election, e = {};
     if (req.body.name) {
-      c.name = req.body.name;
+      e.name = req.body.name;
     } else {
-      c.name = "No Name";
+      e.name = "No Name";
     }
     
-    if (req.body.description) {
-      c.description = req.body.description;
-    }
-    
-    candidate = new Candidate(c);
-    candidate.save(function (err) {
+    election = new Election(e);
+    election.save(function (err) {
       res.set('Content-Type', 'application/json');
       if (err) {
         res.send({'error': err});
       } else {
-        res.send(candidate);
+        res.send(election);
       }
     });
   }
 
   function show(req, res) {
-    res.send('show candidate ' + req.params.candidate);
+    res.send('show election ' + req.params.candidate);
   }
 
   function update(req, res) {
-    res.send('update candidate ' + req.params.candidate);
+    res.send('update election ' + req.params.candidate);
   }
 
   function destroy(req, res) {
-    Candidate.findById(req.params.candidate, function (err, candidate) {
+    Election.findById(req.params.election, function (err, election) {
       res.set('Content-Type', 'application/json');
       if (err) {
         res.send({'error': err});
       } else {
-        candidate.remove(function (err) {
+        election.remove(function (err) {
           if (err) {
             res.send({'error': err});
           } else {

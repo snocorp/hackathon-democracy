@@ -9,8 +9,16 @@
     function ($routeProvider) {
       $routeProvider
         .when('/', {
-          templateUrl: 'views/main.html',
-          controller: 'MainCtrl'
+          templateUrl: 'views/index.html',
+          controller: 'IndexCtrl'
+        })
+        .when('/elections', {
+          templateUrl: 'views/elections.html',
+          controller: 'ElectionsCtrl'
+        })
+        .when('/elections/:electionId/candidates', {
+          templateUrl: 'views/canididates.html',
+          controller: 'CandidatesCtrl'
         })
         .otherwise({
           redirectTo: '/'

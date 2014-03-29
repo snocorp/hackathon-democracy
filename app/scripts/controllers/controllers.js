@@ -3,7 +3,57 @@
 
 var democracyControllers = angular.module('democracyControllers', []);
 
-democracyControllers.controller('MainCtrl', ['$scope', 'Candidate', function ($scope, Candidate) {
+democracyControllers.controller('IndexCtrl', ['$scope', function ($scope) {
+  'use strict';
+}]);
+
+democracyControllers.controller('ElectionsCtrl', ['$scope', 'Election', function ($scope, Election) {
+  'use strict';
+
+  $scope.elections = Election.query();
+  
+  //new election
+  $scope.newElectionName = '';
+  
+  function addElection() {
+    var newElection = new Election({
+      name: $scope.newElectionName
+    });
+    
+    newElection.$save();
+    
+    $scope.elections.push(newElection);
+  }
+  
+  function clearNewElection() {
+    $scope.newElectionName = '';
+  }
+  
+  function removeElections() {
+    var i;
+    for (i = 0; i < $scope.elections.length; i += 1) {
+      if ($scope.elections[i].softDelete) {
+        $scope.elections[i].$delete();
+        
+        $scope.elections.splice(i, 1);
+        i -= 1;
+      }
+    }
+  }
+  
+  function clearSoftDelete() {
+    var i;
+    for (i = 0; i < $scope.elections.length; i += 1) {
+      $scope.elections[i].softDelete = false;
+    }
+  }
+  
+  $scope.addElection = addElection;
+  $scope.removeElections = removeElections;
+  $scope.clearSoftDelete = clearSoftDelete;
+}]);
+
+democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', 'Candidate', function ($scope, $routeParams, Candidate) {
   'use strict';
 
   $scope.candidates = Candidate.query();
@@ -21,6 +71,11 @@ democracyControllers.controller('MainCtrl', ['$scope', 'Candidate', function ($s
     newCandidate.$save();
     
     $scope.candidates.push(newCandidate);
+  }
+  
+  function clearNewCandidate() {
+    $scope.newCandidateName = '';
+    $scope.newCandidateDescription = '';
   }
   
   function removeCandidates() {

@@ -3,9 +3,16 @@
 
 var democracyServices = angular.module('democracyServices', ['ngResource']);
 
+democracyServices.factory('Election', ['$resource',
+  function ($resource) {
+    'use strict';
+    
+    return $resource('/elections/:id', {id: '@_id'}, {});
+  }]);
+
 democracyServices.factory('Candidate', ['$resource',
   function ($resource) {
     'use strict';
     
-    return $resource('/candidates/:id', {id: '@_id'}, {});
+    return $resource('/elections/:electionId/candidates/:id', {electionId: '@electionId', id: '@_id'}, {});
   }]);

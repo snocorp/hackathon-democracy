@@ -11,5 +11,6 @@ module.exports = function (app) {
   
   db.on('error', console.error.bind(console, 'connection error:'));
 
+  app.resource('elections', require('./election'));
   app.resource('candidates', require('./candidate'));
 };
