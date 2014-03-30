@@ -15,6 +15,10 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', 'Election', function
   //new election
   $scope.newElectionName = '';
   
+  function clearNewElection() {
+    $scope.newElectionName = '';
+  }
+  
   function addElection() {
     var newElection = new Election({
       name: $scope.newElectionName
@@ -23,10 +27,8 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', 'Election', function
     newElection.$save();
     
     $scope.elections.push(newElection);
-  }
-  
-  function clearNewElection() {
-    $scope.newElectionName = '';
+    
+    clearNewElection();
   }
   
   function removeElections() {
@@ -49,6 +51,7 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', 'Election', function
   }
   
   $scope.addElection = addElection;
+  $scope.clearNewElection = clearNewElection;
   $scope.removeElections = removeElections;
   $scope.clearSoftDelete = clearSoftDelete;
 }]);
@@ -56,14 +59,24 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', 'Election', function
 democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', 'Candidate', function ($scope, $routeParams, Candidate) {
   'use strict';
 
-  $scope.candidates = Candidate.query();
+  if ($routeParams.electionId) {
+    $scope.candidates = Candidate.query({electionId: $routeParams.electionId});
+  } else {
+    $scope.candidates = [];
+  }
   
   //new candidate
   $scope.newCandidateName = '';
   $scope.newCandidateDescription = '';
   
+  function clearNewCandidate() {
+    $scope.newCandidateName = '';
+    $scope.newCandidateDescription = '';
+  }
+  
   function addCandidate() {
     var newCandidate = new Candidate({
+      electionId: $routeParams.electionId,
       name: $scope.newCandidateName,
       description: $scope.newCandidateDescription
     });
@@ -71,11 +84,8 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', 'Ca
     newCandidate.$save();
     
     $scope.candidates.push(newCandidate);
-  }
-  
-  function clearNewCandidate() {
-    $scope.newCandidateName = '';
-    $scope.newCandidateDescription = '';
+    
+    clearNewCandidate();
   }
   
   function removeCandidates() {
@@ -98,6 +108,7 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', 'Ca
   }
   
   $scope.addCandidate = addCandidate;
+  $scope.clearNewCandidate = clearNewCandidate;
   $scope.removeCandidates = removeCandidates;
   $scope.clearSoftDelete = clearSoftDelete;
 }]);

@@ -2,16 +2,8 @@
 
 var mongoose = require('mongoose');
 
-(function (module) {
+function electionModule(Election, Candidate) {
   'use strict';
-  
-  var electionSchema, Election;
-  
-  electionSchema = mongoose.Schema({
-    name: String
-  });
-
-  Election = mongoose.model('Election', electionSchema);
   
   function index(req, res) {
     Election.find(function (err, elections) {
@@ -62,17 +54,21 @@ var mongoose = require('mongoose');
             res.send({'error': err});
           } else {
             res.send({'ok': true});
+            
+            Candidate.remove({electionId: req.params.election}).exec();
           }
         });
       }
     });
   }
 
-  module.exports = {
+  return {
     index: index,
     create: create,
     show: show,
     update: update,
     destroy: destroy
   };
-}(module));
+}
+ 
+module.exports = electionModule;

@@ -17,7 +17,7 @@
           controller: 'ElectionsCtrl'
         })
         .when('/elections/:electionId/candidates', {
-          templateUrl: 'views/canididates.html',
+          templateUrl: 'views/candidates.html',
           controller: 'CandidatesCtrl'
         })
         .otherwise({

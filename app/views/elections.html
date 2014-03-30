@@ -5,7 +5,9 @@
     <button type="button" class="btn btn-default navbar-btn" title="Remove one or more elections" data-toggle="modal" data-target="#removeElectionsDialog"><span class="glyphicon glyphicon-minus"></span> Remove Elections</button>
   </div>
   <ul class="list-group">
-    <li ng-repeat="election in elections" class="list-group-item">{{election.name}}</li>
+    <li ng-repeat="election in elections" class="list-group-item">
+      {{election.name}} - <a href="#/elections/{{election._id}}/candidates">candidates</a>
+    </li>
   </ul>
 </div>
 <div class="modal fade" id="addElectionDialog" tabindex="-1" role="dialog" aria-labelledby="addElectionLabel" aria-hidden="true">
