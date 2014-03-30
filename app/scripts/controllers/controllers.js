@@ -112,3 +112,80 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', 'Ca
   $scope.removeCandidates = removeCandidates;
   $scope.clearSoftDelete = clearSoftDelete;
 }]);
+
+democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', 'Voter', function ($scope, $routeParams, Voter) {
+  'use strict';
+
+  if ($routeParams.electionId) {
+    $scope.voters = Voter.query({electionId: $routeParams.electionId});
+  } else {
+    $scope.voters = [];
+  }
+  
+  //new voter
+  $scope.newVoterName = '';
+  $scope.newVoterEmail = '';
+  
+  $scope.newVoters = [];
+  
+  function clearNewVoters() {
+    $scope.newVoterName = '';
+    $scope.newVoterEmail = '';
+    
+    $scope.newVoters = [];
+  }
+  
+  function addNewVoter() {
+    var newVoter = {
+      name: $scope.newVoterName,
+      email: $scope.newVoterEmail
+    };
+    
+    $scope.newVoters.push(newVoter);
+    
+    $scope.newVoterName = '';
+    $scope.newVoterEmail = '';
+  }
+  
+  function addVoters() {
+    var newVoter, i;
+    for (i = 0; i < $scope.newVoters.length; i += 1) {
+      newVoter = new Voter({
+        electionId: $routeParams.electionId,
+        name: $scope.newVoters[i].name,
+        email: $scope.newVoters[i].email
+      });
+    
+      newVoter.$save();
+    
+      $scope.voters.push(newVoter);
+    }
+    
+    clearNewVoters();
+  }
+  
+  function removeVoters() {
+    var i;
+    for (i = 0; i < $scope.voters.length; i += 1) {
+      if ($scope.voters[i].softDelete) {
+        $scope.voters[i].$delete();
+        
+        $scope.voters.splice(i, 1);
+        i -= 1;
+      }
+    }
+  }
+  
+  function clearSoftDelete() {
+    var i;
+    for (i = 0; i < $scope.voters.length; i += 1) {
+      $scope.voters[i].softDelete = false;
+    }
+  }
+  
+  $scope.addNewVoter = addNewVoter;
+  $scope.addVoters = addVoters;
+  $scope.clearNewVoters = clearNewVoters;
+  $scope.removeVoters = removeVoters;
+  $scope.clearSoftDelete = clearSoftDelete;
+}]);

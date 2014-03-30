@@ -20,6 +20,10 @@
           templateUrl: 'views/candidates.html',
           controller: 'CandidatesCtrl'
         })
+        .when('/elections/:electionId/voters', {
+          templateUrl: 'views/voters.html',
+          controller: 'VotersCtrl'
+        })
         .otherwise({
           redirectTo: '/'
         });

@@ -11,11 +11,20 @@ module.exports = function (app) {
     Election,
     candidateSchema,
     Candidate,
+    voterSchema,
+    Voter,
     db = mongoose.connection,
     elections,
-    candidates;
+    candidates,
+    voters;
   
   db.on('error', console.error.bind(console, 'connection error:'));
+  
+  electionSchema = mongoose.Schema({
+    name: String
+  });
+
+  Election = mongoose.model('Election', electionSchema);
   
   candidateSchema = mongoose.Schema({
     electionId: mongoose.Schema.Types.ObjectId,
@@ -25,14 +34,16 @@ module.exports = function (app) {
 
   Candidate = mongoose.model('Candidate', candidateSchema);
   
-  electionSchema = mongoose.Schema({
-    name: String
+  voterSchema = mongoose.Schema({
+    electionId: mongoose.Schema.Types.ObjectId
   });
 
-  Election = mongoose.model('Election', electionSchema);
+  Voter = mongoose.model('Voter', voterSchema);
 
   elections = app.resource('elections', require('./election')(Election, Candidate), { load: Election.get });
   candidates = app.resource('candidates', require('./candidate')(Candidate), { load: Candidate.get });
+  voters = app.resource('voters', require('./voter')(Voter), { load: Voter.get });
   
   elections.add(candidates);
+  elections.add(voters);
 };
