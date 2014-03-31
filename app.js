@@ -1,7 +1,6 @@
 /*jslint node: true, nomen: true, indent: 2 */
 
 var express = require('express'),
-  routes = require('./routes'),
   path = require('path');
 
 require('express-resource');

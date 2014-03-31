@@ -1,6 +1,8 @@
-/*jslint node: true, indent: 2 */
+/*jslint node: true, nomen: true, indent: 2 */
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+  nodemailer = require('nodemailer'),
+  config = require('../config/config');
 
 function voterModule(Voter) {
   'use strict';
@@ -17,24 +19,50 @@ function voterModule(Voter) {
   }
 
   function create(req, res) {
-    var voter, c = {electionId: req.params.election};
-    if (req.body.name) {
-      c.name = req.body.name;
-    } else {
-      c.name = "No Name";
-    }
-    
-    if (req.body.description) {
-      c.description = req.body.description;
-    }
-    
-    voter = new Voter(c);
+    var voter,
+      transport,
+      mailOptions,
+      v = {electionId: req.params.election};
+        
+    voter = new Voter(v);
     voter.save(function (err) {
       res.set('Content-Type', 'application/json');
       if (err) {
         res.send({'error': err});
       } else {
         res.send(voter);
+        
+        if (req.body.email) {
+          if (config.smtp_service) {
+            transport = nodemailer.createTransport("SMTP", {
+              service: config.smtp_service,
+              auth: {
+                user: config.smtp_user,
+                pass: config.smtp_password
+              }
+            });
+
+            var mailOptions = {
+              from: config.smtp_user, // sender address
+              to: req.body.email, // list of receivers
+              subject: "Voter Registration", // Subject line
+              text: "Click the link below to vote:\n\n" + "http://localhost/" + voter._id
+            };
+
+            // send mail with defined transport object
+            transport.sendMail(mailOptions, function (error, response) {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log("Message sent: " + response.message);
+              }
+
+              transport.close(); // shut down the connection pool, no more messages
+            });
+          } else {
+            console.warn("Voters will not be emailed. No SMTP service defined.");
+          }
+        }
       }
     });
   }
