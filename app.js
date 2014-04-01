@@ -1,7 +1,6 @@
 /*jslint node: true, nomen: true, indent: 2 */
 
 var express = require('express'),
-  routes = require('./routes'),
   path = require('path');
 
 require('express-resource');
@@ -11,6 +10,6 @@ app.directory = __dirname;
 
 require('./config/environments')(app);
 require('./routes')(app);
-require('./models')(app);
+require('./models').configure(app);
 
 module.exports = app;

@@ -16,3 +16,10 @@ democracyServices.factory('Candidate', ['$resource',
     
     return $resource('/elections/:electionId/candidates/:id', {electionId: '@electionId', id: '@_id'}, {});
   }]);
+
+democracyServices.factory('Voter', ['$resource',
+  function ($resource) {
+    'use strict';
+    
+    return $resource('/elections/:electionId/voters/:id', {electionId: '@electionId', id: '@_id'}, {});
+  }]);
