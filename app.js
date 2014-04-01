@@ -10,6 +10,6 @@ app.directory = __dirname;
 
 require('./config/environments')(app);
 require('./routes')(app);
-require('./models')(app);
+require('./models').configure(app);
 
 module.exports = app;

@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
   nodemailer = require('nodemailer'),
   config = require('../config/config');
 
-function voterModule(Voter) {
+function voterModule(app, Voter) {
   'use strict';
   
   function index(req, res) {
@@ -21,11 +21,13 @@ function voterModule(Voter) {
   function create(req, res) {
     var voter,
       transport,
-      mailOptions,
       v = {electionId: req.params.election};
         
     voter = new Voter(v);
     voter.save(function (err) {
+      var port = '',
+        mailOptions;
+      
       res.set('Content-Type', 'application/json');
       if (err) {
         res.send({'error': err});
@@ -41,12 +43,17 @@ function voterModule(Voter) {
                 pass: config.smtp_password
               }
             });
+            
+            if (app.get('port').toString() !== '80') {
+              port = ':' + app.get('port');
+            }
 
-            var mailOptions = {
+            mailOptions = {
               from: config.smtp_user, // sender address
               to: req.body.email, // list of receivers
               subject: "Voter Registration", // Subject line
-              text: "Click the link below to vote:\n\n" + "http://localhost/" + voter._id
+              text: "Click the link below to vote:\n\n" +
+                req.protocol + "://" + req.host + port + '/vote/' + voter._id
             };
 
             // send mail with defined transport object
