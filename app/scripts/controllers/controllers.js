@@ -7,28 +7,34 @@ democracyControllers.controller('IndexCtrl', ['$scope', function ($scope) {
   'use strict';
 }]);
 
-democracyControllers.controller('ElectionsCtrl', ['$scope', 'Election', function ($scope, Election) {
+democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+  'use strict';
+  
+  $scope.newElectionName = '';
+
+  $scope.ok = function () {
+    $modalInstance.close(this.newElectionName);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  
+}]);
+
+democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election', function ($scope, $modal, Election) {
   'use strict';
 
   $scope.elections = Election.query();
   
-  //new election
-  $scope.newElectionName = '';
-  
-  function clearNewElection() {
-    $scope.newElectionName = '';
-  }
-  
-  function addElection() {
+  function addElection(name) {
     var newElection = new Election({
-      name: $scope.newElectionName
+      name: name
     });
     
     newElection.$save();
     
     $scope.elections.push(newElection);
-    
-    clearNewElection();
   }
   
   function removeElections() {
@@ -50,8 +56,21 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', 'Election', function
     }
   }
   
-  $scope.addElection = addElection;
-  $scope.clearNewElection = clearNewElection;
+  function showAddElection() {
+    var modalInstance = $modal.open({
+      templateUrl: 'modal/addElection.tpl.html',
+      scope: $scope,
+      controller: 'AddElectionCtrl'
+    });
+
+    modalInstance.result.then(
+      function (newElectionName) {
+        addElection(newElectionName);
+      }
+    );
+  }
+  
+  $scope.showAddElection = showAddElection;
   $scope.removeElections = removeElections;
   $scope.clearSoftDelete = clearSoftDelete;
 }]);
