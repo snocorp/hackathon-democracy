@@ -22,6 +22,19 @@ democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', 
   
 }]);
 
+democracyControllers.controller('RemoveElectionsCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+  'use strict';
+
+  $scope.ok = function () {
+    $modalInstance.close($scope.elections);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  
+}]);
+
 democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election', function ($scope, $modal, Election) {
   'use strict';
 
@@ -37,13 +50,13 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election'
     $scope.elections.push(newElection);
   }
   
-  function removeElections() {
+  function removeElections(elections) {
     var i;
-    for (i = 0; i < $scope.elections.length; i += 1) {
-      if ($scope.elections[i].softDelete) {
-        $scope.elections[i].$delete();
+    for (i = 0; i < elections.length; i += 1) {
+      if (elections[i].softDelete) {
+        elections[i].$delete();
         
-        $scope.elections.splice(i, 1);
+        elections.splice(i, 1);
         i -= 1;
       }
     }
@@ -70,9 +83,30 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election'
     );
   }
   
+  function showRemoveElections() {
+    var modalInstance = $modal.open({
+      templateUrl: 'modal/removeElections.tpl.html',
+      scope: $scope,
+      controller: 'RemoveElectionsCtrl',
+      resolve: {
+        elections: function () {
+          return $scope.elections;
+        }
+      }
+    });
+
+    modalInstance.result.then(
+      function (elections) {
+        removeElections(elections);
+      },
+      function (reason) {
+        clearSoftDelete();
+      }
+    );
+  }
+  
   $scope.showAddElection = showAddElection;
-  $scope.removeElections = removeElections;
-  $scope.clearSoftDelete = clearSoftDelete;
+  $scope.showRemoveElections = showRemoveElections;
 }]);
 
 democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', 'Candidate', function ($scope, $routeParams, Candidate) {

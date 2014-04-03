@@ -1,0 +1,18 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
+  <h4 class="modal-title" id="removeElectionsLabel">Remove Elections</h4>
+</div>
+<div class="modal-body">
+  <from role="form">
+    <div class="checkbox" ng-repeat="election in elections">
+      <label>
+        <input type="checkbox" ng-model="election.softDelete" name="c{{election._id}}"/>
+        {{election.name}}
+      </label>
+    </div>
+  </from>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" ng-click="ok()" data-dismiss="modal">Remove</button>
+  <button type="button" class="btn btn-default" ng-click="cancel()" data-dismiss="modal">Cancel</button>
+</div>
