@@ -1,8 +1,8 @@
 <div>
   <h2>Elections</h2>
   <div class="btn-group">
-    <button type="button" class="btn btn-default navbar-btn" title="Create a new election" data-toggle="modal" data-target="#addElectionDialog"><span class="glyphicon glyphicon-plus"></span> Create Election</button>
-    <button type="button" class="btn btn-default navbar-btn" title="Remove one or more elections" data-toggle="modal" data-target="#removeElectionsDialog"><span class="glyphicon glyphicon-minus"></span> Remove Elections</button>
+    <button type="button" class="btn btn-default navbar-btn" title="Create a new election" ng-click="showAddElection()"><span class="glyphicon glyphicon-plus"></span> Create Election</button>
+    <button type="button" class="btn btn-default navbar-btn" title="Remove one or more elections" ng-click="showRemoveElections()"><span class="glyphicon glyphicon-minus"></span> Remove Elections</button>
   </div>
   <ul class="list-group">
     <li ng-repeat="election in elections" class="list-group-item">
@@ -11,50 +11,4 @@
       <a href="#/elections/{{election._id}}/voters">voters</a>
     </li>
   </ul>
-</div>
-<div class="modal fade" id="addElectionDialog" tabindex="-1" role="dialog" aria-labelledby="addElectionLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="addElectionLabel">Add Election</h4>
-      </div>
-      <div class="modal-body">
-        <form role="form">
-          <div class="form-group">
-            <label for="addElectionName">Name</label>
-            <input type="text" class="form-control" id="addElectionName" ng-model="newElectionName" placeHolder="Enter name"/>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="addElection()" data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-default" ng-click="clearNewElection()" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="removeElectionsDialog" tabindex="-1" role="dialog" aria-labelledby="removeElectionsLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="removeElectionsLabel">Remove Elections</h4>
-      </div>
-      <div class="modal-body">
-        <from role="form">
-          <div class="checkbox" ng-repeat="election in elections">
-            <label>
-              <input type="checkbox" ng-model="election.softDelete" name="c{{election._id}}"/>
-              {{election.name}}
-            </label>
-          </div>
-        </from>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="removeElections()" data-dismiss="modal">Remove</button>
-        <button type="button" class="btn btn-default" ng-click="clearSoftDelete()" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
 </div>

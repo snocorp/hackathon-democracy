@@ -1,8 +1,8 @@
 <div>
   <h2>Candidates</h2>
   <div class="btn-group">
-    <button type="button" class="btn btn-default navbar-btn" title="Create a new candidate" data-toggle="modal" data-target="#addCandidateDialog"><span class="glyphicon glyphicon-plus"></span> Add Candidate</button>
-    <button type="button" class="btn btn-default navbar-btn" title="Remove one or more candidates" data-toggle="modal" data-target="#removeCandidatesDialog"><span class="glyphicon glyphicon-minus"></span> Remove Candidates</button>
+    <button type="button" class="btn btn-default navbar-btn" title="Create a new candidate" ng-click="showAddCandidate()"><span class="glyphicon glyphicon-plus"></span> Add Candidate</button>
+    <button type="button" class="btn btn-default navbar-btn" title="Remove one or more candidates"  ng-click="showRemoveCandidates()"><span class="glyphicon glyphicon-minus"></span> Remove Candidates</button>
   </div>
   <div ng-repeat="candidate in candidates" class="panel panel-default">
     <div class="panel-heading">
@@ -10,57 +10,6 @@
     </div>
     <div class="panel-body">
       <p>{{candidate.description}}</p>
-      <!--<button type="button" class="btn btn-default" title="Reset the system"><span class="glyphicon glyphicon-thumbs-up"></span> Vote</button>-->
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="addCandidateDialog" tabindex="-1" role="dialog" aria-labelledby="addCandidateLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" ng-click="clearNewCandidate()" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="addCandidateLabel">Add Candidate</h4>
-      </div>
-      <div class="modal-body">
-        <form role="form">
-          <div class="form-group">
-            <label for="addCandidateName">Name</label>
-            <input type="text" class="form-control" id="addCandidateName" ng-model="newCandidateName" placeHolder="Enter name"/>
-          </div>
-          <div class="form-group">
-            <label for="addCandidateDescription">Description</label>
-            <textarea class="form-control" id="addCandidateDescription" ng-model="newCandidateDescription" rows="3"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="addCandidate()" data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-default" ng-click="clearNewCandidate()" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="removeCandidatesDialog" tabindex="-1" role="dialog" aria-labelledby="removeCandidatesLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="removeCandidatesLabel">Remove Candidates</h4>
-      </div>
-      <div class="modal-body">
-        <from role="form">
-          <div class="checkbox" ng-repeat="candidate in candidates">
-            <label>
-              <input type="checkbox" ng-model="candidate.softDelete" name="c{{candidate._id}}"/>
-              {{candidate.name}}
-            </label>
-          </div>
-        </from>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="removeCandidates()" data-dismiss="modal">Remove</button>
-        <button type="button" class="btn btn-default" ng-click="clearSoftDelete()" data-dismiss="modal">Cancel</button>
-      </div>
     </div>
   </div>
 </div>

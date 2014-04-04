@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var app = angular.module('democracyApp', ['ngRoute', 'democracyControllers', 'democracyServices']);
+  var app = angular.module('democracyApp', ['ngRoute', 'ui.bootstrap', 'democracyControllers', 'democracyServices']);
   app.config(['$routeProvider',
     function ($routeProvider) {
       $routeProvider
