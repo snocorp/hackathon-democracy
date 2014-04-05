@@ -1,11 +1,9 @@
 /*jslint browser: true, indent: 2 */
-/*global angular, console*/
+/*global angular*/
 
 var democracyControllers = angular.module('democracyControllers', []);
 
-democracyControllers.controller('IndexCtrl', ['$scope', function ($scope) {
-  'use strict';
-}]);
+democracyControllers.controller('IndexCtrl', []);
 
 democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
@@ -99,7 +97,7 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election'
       function (elections) {
         removeElections(elections);
       },
-      function (reason) {
+      function () {
         clearSoftDelete();
       }
     );
@@ -211,7 +209,7 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
       function (candidates) {
         removeCandidates(candidates);
       },
-      function (reason) {
+      function () {
         clearSoftDelete();
       }
     );
@@ -336,7 +334,7 @@ democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal
       function (voters) {
         removeVoters(voters);
       },
-      function (reason) {
+      function () {
         clearSoftDelete();
       }
     );
