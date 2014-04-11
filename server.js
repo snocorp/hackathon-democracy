@@ -2,6 +2,9 @@
 
 var app = require('./app');
 
+/**
+ * Start the server using the pre-defined application.
+ */
 require('http').createServer(app).listen(app.get('port'), function () {
   'use strict';
   

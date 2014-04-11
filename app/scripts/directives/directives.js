@@ -1,5 +1,5 @@
 /*jslint browser: true, indent: 2 */
-/*global angular, console*/
+/*global angular*/
 
 var democracyDirectives = angular.module('democracyDirectives', []);
 

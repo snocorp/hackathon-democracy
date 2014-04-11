@@ -1,11 +1,9 @@
 /*jslint browser: true, indent: 2 */
-/*global angular, console*/
+/*global angular*/
 
 var democracyControllers = angular.module('democracyControllers', []);
 
-democracyControllers.controller('IndexCtrl', ['$scope', function ($scope) {
-  'use strict';
-}]);
+democracyControllers.controller('IndexCtrl', []);
 
 democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
@@ -35,39 +33,10 @@ democracyControllers.controller('RemoveElectionsCtrl', ['$scope', '$modalInstanc
   
 }]);
 
-democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election', function ($scope, $modal, Election) {
+democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionService', function ($scope, $modal, ElectionService) {
   'use strict';
 
-  $scope.elections = Election.query();
-  
-  function addElection(name) {
-    var newElection = new Election({
-      name: name
-    });
-    
-    newElection.$save();
-    
-    $scope.elections.push(newElection);
-  }
-  
-  function removeElections(elections) {
-    var i;
-    for (i = 0; i < elections.length; i += 1) {
-      if (elections[i].softDelete) {
-        elections[i].$delete();
-        
-        elections.splice(i, 1);
-        i -= 1;
-      }
-    }
-  }
-  
-  function clearSoftDelete() {
-    var i;
-    for (i = 0; i < $scope.elections.length; i += 1) {
-      $scope.elections[i].softDelete = false;
-    }
-  }
+  $scope.elections = ElectionService.getElections();
   
   function showAddElection() {
     var modalInstance = $modal.open({
@@ -78,7 +47,7 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election'
 
     modalInstance.result.then(
       function (newElectionName) {
-        addElection(newElectionName);
+        ElectionService.addElection($scope.elections, newElectionName);
       }
     );
   }
@@ -97,10 +66,10 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'Election'
 
     modalInstance.result.then(
       function (elections) {
-        removeElections(elections);
+        ElectionService.removeElections(elections);
       },
-      function (reason) {
-        clearSoftDelete();
+      function () {
+        ElectionService.clearSoftDelete($scope.elections);
       }
     );
   }
@@ -211,7 +180,7 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
       function (candidates) {
         removeCandidates(candidates);
       },
-      function (reason) {
+      function () {
         clearSoftDelete();
       }
     );
@@ -336,7 +305,7 @@ democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal
       function (voters) {
         removeVoters(voters);
       },
-      function (reason) {
+      function () {
         clearSoftDelete();
       }
     );
