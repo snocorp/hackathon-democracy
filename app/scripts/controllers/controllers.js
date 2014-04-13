@@ -103,6 +103,22 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionS
   $scope.showRemoveElections = showRemoveElections;
 }]);
 
+democracyControllers.controller('ElectionCtrl', ['$scope', '$routeParams', 'ElectionService', function ($scope, $routeParams, ElectionService) {
+  'use strict';
+  
+  function loadElection() {
+    var e = ElectionService.getElection($routeParams.electionId);
+    
+    e.$promise.then(null, function (response) {
+      //TODO handle error
+    });
+    
+    return e;
+  }
+  
+  $scope.election = loadElection();
+}]);
+
 democracyControllers.controller('AddCandidateCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
   

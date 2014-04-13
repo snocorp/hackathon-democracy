@@ -1,0 +1,17 @@
+<div>
+  <h2>{{election.name}}</h2>
+  <alert ng-show="electionError" type="'danger'" close="clearError()">
+    <p>{{electionError.message}}</p>
+    <ul ng-show="electionError.userErrors">
+      <li ng-repeat="error in electionError.userErrors">{{error}}</li>
+    </ul>
+  </alert>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <a href="#/elections/{{election._id}}/candidates">candidates</a>
+    </li>
+    <li class="list-group-item">
+      <a href="#/elections/{{election._id}}/voters">voters</a>
+    </li>
+  </ul>
+</div>

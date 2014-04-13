@@ -73,7 +73,17 @@ function electionModule(Election, Candidate) {
   }
 
   function show(req, res) {
-    res.send('show election ' + req.params.election);
+    Election.findById(req.params.election, function (err, election) {
+      res.set('Content-Type', 'application/json');
+      if (err) {
+        res.send(500, {
+          message: 'Unable to load election.',
+          error: err
+        });
+      } else {
+        res.send(200, election);
+      }
+    });
   }
 
   function update(req, res) {

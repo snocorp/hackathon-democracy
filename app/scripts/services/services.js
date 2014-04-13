@@ -51,6 +51,17 @@ democracyServices.factory('ElectionService', ['Election',
     }
     
     /**
+     * Returns the requested election.
+     *
+     * @param {string} electionId - the id of the election to retrieve
+     *
+     * @returns {Election} Election
+     */
+    function getElection(electionId) {
+      return Election.get({id: electionId});
+    }
+    
+    /**
      * Returns the array of elections queried by the Election resource.
      *
      * @returns {Election[]} Array of elections
@@ -74,6 +85,7 @@ democracyServices.factory('ElectionService', ['Election',
     return {
       addElection: addElection,
       clearSoftDelete: clearSoftDelete,
+      getElection: getElection,
       getElections: getElections,
       removeElections: removeElections
     };
