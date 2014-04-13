@@ -35,8 +35,16 @@ democracyControllers.controller('RemoveElectionsCtrl', ['$scope', '$modalInstanc
 
 democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionService', function ($scope, $modal, ElectionService) {
   'use strict';
-
-  $scope.elections = ElectionService.getElections();
+  
+  function loadElections() {
+    var e = ElectionService.getElections();
+    
+    e.$promise.catch(function (response) {
+      $scope.electionError = response.data;
+    });
+    
+    return e;
+  }
   
   function showAddElection() {
     var modalInstance = $modal.open({
@@ -74,6 +82,13 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionS
     );
   }
   
+  function clearError() {
+    $scope.electionError = null;
+  }
+  
+
+  $scope.clearError = clearError;
+  $scope.elections = loadElections();
   $scope.showAddElection = showAddElection;
   $scope.showRemoveElections = showRemoveElections;
 }]);

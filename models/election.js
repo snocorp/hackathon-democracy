@@ -9,9 +9,12 @@ function electionModule(Election, Candidate) {
     Election.find(function (err, elections) {
       res.set('Content-Type', 'application/json');
       if (err) {
-        res.send({'error': err});
+        res.send(500, {
+          'message': 'Unable to find elections.',
+          'error': err
+        });
       } else {
-        res.send(elections);
+        res.send(200, elections);
       }
     });
   }

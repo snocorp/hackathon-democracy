@@ -4,6 +4,7 @@
     <button type="button" class="btn btn-default navbar-btn" title="Create a new election" ng-click="showAddElection()"><span class="glyphicon glyphicon-plus"></span> Create Election</button>
     <button type="button" class="btn btn-default navbar-btn" title="Remove one or more elections" ng-click="showRemoveElections()"><span class="glyphicon glyphicon-minus"></span> Remove Elections</button>
   </div>
+  <alert ng-show="electionError" type="'danger'" close="clearError()">{{electionError.message}}</alert>
   <ul class="list-group">
     <li ng-repeat="election in elections" class="list-group-item">
       {{election.name}} |
