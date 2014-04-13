@@ -3,7 +3,9 @@
 
 var democracyControllers = angular.module('democracyControllers', []);
 
-democracyControllers.controller('IndexCtrl', []);
+democracyControllers.controller('IndexCtrl', [function () {
+  'use strict';
+}]);
 
 democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
@@ -39,7 +41,7 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionS
   function loadElections() {
     var e = ElectionService.getElections();
     
-    e.$promise.catch(function (response) {
+    e.$promise.then(null, function (response) {
       $scope.electionError = response.data;
     });
     
@@ -55,7 +57,15 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionS
 
     modalInstance.result.then(
       function (newElectionName) {
-        ElectionService.addElection($scope.elections, newElectionName);
+        ElectionService.addElection(newElectionName)
+          .then(
+            function (newElection) {
+              $scope.elections.push(newElection);
+            },
+            function (response) {
+              $scope.electionError = response.data;
+            }
+          );
       }
     );
   }

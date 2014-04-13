@@ -23,17 +23,14 @@ democracyServices.factory('ElectionService', ['Election',
     /**
      * Adds a new election to the given array of elections.
      *
-     * @param {Election[]} elections - An array of elections
      * @param {string} name - The name of the election to be added
      */
-    function addElection(elections, name) {
+    function addElection(name) {
       var newElection = new Election({
         name: name
       });
 
-      newElection.$save();
-
-      elections.push(newElection);
+      return newElection.$save();
     }
 
     /**
