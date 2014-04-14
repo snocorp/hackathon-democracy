@@ -78,10 +78,17 @@ function electionModule(Election, Candidate) {
       if (err) {
         res.send(500, {
           message: 'Unable to load election.',
-          error: err
+          errors: [err]
         });
       } else {
-        res.send(200, election);
+        if (election) {
+          res.send(200, election);
+        } else {
+          res.send(404, {
+            message: 'Unable to load election.',
+            userErrors: ['The specified election could not be found.']
+          });
+        }
       }
     });
   }

@@ -5,7 +5,7 @@
     <button type="button" class="btn btn-default navbar-btn" title="Remove one or more elections" ng-click="showRemoveElections()"><span class="glyphicon glyphicon-minus"></span> Remove Elections</button>
   </div>
   <alert ng-show="electionError" type="'danger'" close="clearError()">
-    <p>{{electionError.message}}</p>
+    <span>{{electionError.message}}</span>
     <ul ng-show="electionError.userErrors">
       <li ng-repeat="error in electionError.userErrors">{{error}}</li>
     </ul>

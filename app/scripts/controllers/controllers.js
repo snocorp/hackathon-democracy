@@ -110,7 +110,7 @@ democracyControllers.controller('ElectionCtrl', ['$scope', '$routeParams', 'Elec
     var e = ElectionService.getElection($routeParams.electionId);
     
     e.$promise.then(null, function (response) {
-      //TODO handle error
+      $scope.electionError = response.data;
     });
     
     return e;

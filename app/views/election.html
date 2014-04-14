@@ -1,7 +1,7 @@
 <div>
   <h2>{{election.name}}</h2>
   <alert ng-show="electionError" type="'danger'" close="clearError()">
-    <p>{{electionError.message}}</p>
+    <span>{{electionError.message}}</span>
     <ul ng-show="electionError.userErrors">
       <li ng-repeat="error in electionError.userErrors">{{error}}</li>
     </ul>
