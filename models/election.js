@@ -94,23 +94,45 @@ function electionModule(Election, Candidate) {
   }
 
   function update(req, res) {
-    res.send('update election ' + req.params.election);
+    var e = {
+        name: req.params.name
+    };
+    
+    Election.findByIdAndUpdate(req.params.election, e, function (err, election) {
+      res.set('Content-Type', 'application/json');
+      if (err) {
+        res.send({
+          errors: [err]
+        });
+      } else {
+        if (election) {
+          res.send(election);
+        } else {
+          res.send(404, {
+            message: 'Unable to update election.',
+            userErrors: ['The specified election could not be found.']
+          });
+        }
+      }
+    });
   }
 
   function destroy(req, res) {
-    Election.findById(req.params.election, function (err, election) {
+    Election.findByIdAndRemove(req.params.election, function (err, election) {
       res.set('Content-Type', 'application/json');
       if (err) {
         res.send({'error': err});
       } else {
-        election.remove(function (err) {
-          if (err) {
-            res.send({'error': err});
-          } else {
-            res.send({'ok': true});
+        if (election) {
+            res.send({ok: true});
             
-            Candidate.remove({electionId: req.params.election}).exec();
-          }
+          Candidate.remove({electionId: req.params.election}).exec();
+        } else {
+          res.send(404, {
+            message: 'Unable to remove election.',
+            userErrors: ['The specified election could not be found.']
+          });
+        }
         });
       }
     });
