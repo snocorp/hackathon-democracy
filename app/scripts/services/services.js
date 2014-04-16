@@ -10,7 +10,9 @@ democracyServices.factory('Election', ['$resource',
   function ($resource) {
     'use strict';
     
-    return $resource('/elections/:id', {id: '@_id'}, {});
+    return $resource('/elections/:id', {id: '@_id'}, {
+        'save': {method:'PUT'}
+    });
   }]);
 
 /**
@@ -69,6 +71,15 @@ democracyServices.factory('ElectionService', ['Election',
     function getElections() {
       return Election.query();
     }
+    
+    /**
+     * Saves the given election.
+     * 
+     * @param {Election} - election to be saved
+     */
+    function saveElection(election) {
+      election.$save();
+    }
 
     /**
      * Clears the soft delete mark from the given array of elections.
@@ -87,7 +98,8 @@ democracyServices.factory('ElectionService', ['Election',
       clearSoftDelete: clearSoftDelete,
       getElection: getElection,
       getElections: getElections,
-      removeElections: removeElections
+      removeElections: removeElections,
+      saveElection: saveElection
     };
   }]);
 

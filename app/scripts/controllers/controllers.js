@@ -116,7 +116,18 @@ democracyControllers.controller('ElectionCtrl', ['$scope', '$routeParams', 'Elec
     return e;
   }
   
+  function updateElectionName(name) {
+    if (!name) {
+      return "Name is required";
+    }
+      
+    ElectionService.saveElection($scope.election);
+      
+    return true;
+  }
+  
   $scope.election = loadElection();
+  $scope.updateElectionName = updateElectionName;
 }]);
 
 democracyControllers.controller('AddCandidateCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {

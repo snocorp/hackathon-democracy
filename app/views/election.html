@@ -1,5 +1,7 @@
 <div>
-  <h2>{{election.name}}</h2>
+  <h2 editable-text="election.name" onbeforesave="updateElectionName($data)">
+    <span class="glyphicon glyphicon-pencil pull-right"></span> {{election.name}}
+  </h2>
   <alert ng-show="electionError" type="'danger'" close="clearError()">
     <span>{{electionError.message}}</span>
     <ul ng-show="electionError.userErrors">

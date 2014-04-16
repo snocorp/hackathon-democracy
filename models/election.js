@@ -95,7 +95,7 @@ function electionModule(Election, Candidate) {
 
   function update(req, res) {
     var e = {
-        name: req.params.name
+        name: req.body.name
     };
     
     Election.findByIdAndUpdate(req.params.election, e, function (err, election) {
@@ -133,7 +133,6 @@ function electionModule(Election, Candidate) {
             userErrors: ['The specified election could not be found.']
           });
         }
-        });
       }
     });
   }
