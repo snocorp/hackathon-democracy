@@ -1,0 +1,19 @@
+<div>
+  <h2 editable-text="election.name" onbeforesave="updateElectionName($data)">
+    <span class="glyphicon glyphicon-pencil pull-right"></span> {{election.name}}
+  </h2>
+  <alert ng-show="electionError" type="'danger'" close="clearError()">
+    <span>{{electionError.message}}</span>
+    <ul ng-show="electionError.userErrors">
+      <li ng-repeat="error in electionError.userErrors">{{error}}</li>
+    </ul>
+  </alert>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <a href="#/elections/{{election._id}}/candidates">candidates</a>
+    </li>
+    <li class="list-group-item">
+      <a href="#/elections/{{election._id}}/voters">voters</a>
+    </li>
+  </ul>
+</div>

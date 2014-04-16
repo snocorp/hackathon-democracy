@@ -18,7 +18,7 @@ module.exports = function (app) {
     });
   });
   app.get('/', function (req, res, next) {
-    console.log(req.session.voterId);
+    console.log("voterId: " + req.session.voterId);
     res.render('index');
   });
 };

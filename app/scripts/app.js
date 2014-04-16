@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var app = angular.module('democracyApp', ['ngRoute', 'ui.bootstrap', 'democracyControllers', 'democracyServices', 'democracyDirectives']);
+  var app = angular.module('democracyApp', ['ngRoute', 'ui.bootstrap', 'xeditable', 'democracyControllers', 'democracyServices', 'democracyDirectives']);
   app.config(['$routeProvider',
     function ($routeProvider) {
       $routeProvider
@@ -24,9 +24,16 @@
           templateUrl: 'views/voters.html',
           controller: 'VotersCtrl'
         })
+        .when('/elections/:electionId', {
+          templateUrl: 'views/election.html',
+          controller: 'ElectionCtrl'
+        })
         .otherwise({
           redirectTo: '/'
         });
+    }])
+    .run(['editableOptions', function (editableOptions) {
+      editableOptions.theme = 'bs3';
     }]);
 
 }.call(this));

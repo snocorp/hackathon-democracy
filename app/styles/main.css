@@ -6,3 +6,24 @@ body {
 .form-group textarea {
   resize: vertical;
 }
+
+h2.editable-click {
+  color: inherit;
+  border-bottom: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+h2.editable-click:hover {
+  color: inherit;
+  border: 1px solid #ccc;
+}
+
+h2.editable-click span {
+  display: none;
+}
+
+h2.editable-click:hover span {
+  display: inline;
+}

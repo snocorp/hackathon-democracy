@@ -10,7 +10,9 @@ democracyServices.factory('Election', ['$resource',
   function ($resource) {
     'use strict';
     
-    return $resource('/elections/:id', {id: '@_id'}, {});
+    return $resource('/elections/:id', {id: '@_id'}, {
+        'save': {method:'PUT'}
+    });
   }]);
 
 /**
@@ -23,17 +25,14 @@ democracyServices.factory('ElectionService', ['Election',
     /**
      * Adds a new election to the given array of elections.
      *
-     * @param {Election[]} elections - An array of elections
      * @param {string} name - The name of the election to be added
      */
-    function addElection(elections, name) {
+    function addElection(name) {
       var newElection = new Election({
         name: name
       });
 
-      newElection.$save();
-
-      elections.push(newElection);
+      return newElection.$save();
     }
 
     /**
@@ -54,12 +53,32 @@ democracyServices.factory('ElectionService', ['Election',
     }
     
     /**
+     * Returns the requested election.
+     *
+     * @param {string} electionId - the id of the election to retrieve
+     *
+     * @returns {Election} Election
+     */
+    function getElection(electionId) {
+      return Election.get({id: electionId});
+    }
+    
+    /**
      * Returns the array of elections queried by the Election resource.
      *
      * @returns {Election[]} Array of elections
      */
     function getElections() {
       return Election.query();
+    }
+    
+    /**
+     * Saves the given election.
+     * 
+     * @param {Election} - election to be saved
+     */
+    function saveElection(election) {
+      election.$save();
     }
 
     /**
@@ -77,8 +96,10 @@ democracyServices.factory('ElectionService', ['Election',
     return {
       addElection: addElection,
       clearSoftDelete: clearSoftDelete,
+      getElection: getElection,
       getElections: getElections,
-      removeElections: removeElections
+      removeElections: removeElections,
+      saveElection: saveElection
     };
   }]);
 
