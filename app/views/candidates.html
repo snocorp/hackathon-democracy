@@ -17,7 +17,7 @@
       </h3>
     </div>
     <div class="panel-body">
-      <p>{{candidate.description}}</p>
+      <p editable-textarea="candidate.description" e-rows="3" e-cols="50" onbeforesave="updateCandidateDescription(candidate, $data)"><span class="glyphicon glyphicon-pencil pull-right"></span> {{candidate.description}}</p>
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-/*jslint node: true, indent: 2 */
+/*jslint node: true, nomen: true, indent: 2 */
 
 var mongoose = require('mongoose');
 
@@ -119,12 +119,12 @@ function candidateModule(Election) {
         }
         
         if (candidate) {
-          if (typeof req.params.name !== 'undefined') {
-            candidate.name = req.params.name;
+          if (typeof req.body.name !== 'undefined') {
+            candidate.name = req.body.name;
           }
           
-          if (typeof req.params.description !== 'undefined') {
-            candidate.description = req.params.description;
+          if (typeof req.body.description !== 'undefined') {
+            candidate.description = req.body.description;
           }
           
           election.save(function (err) {
@@ -153,18 +153,41 @@ function candidateModule(Election) {
   }
 
   function destroy(req, res) {
-    Candidate.findById(req.params.candidate, function (err, candidate) {
+    Election.findById(req.params.election, function (err, election) {
+      var i;
+      
       res.set('Content-Type', 'application/json');
       if (err) {
-        res.send({'error': err});
-      } else {
-        candidate.remove(function (err) {
-          if (err) {
-            res.send({'error': err});
-          } else {
-            res.send({'ok': true});
-          }
+        res.send(500, {
+          message: 'Unable to remove candidate.',
+          errors: [err]
         });
+      } else {
+        if (election.candidates) {
+          for (i = 0; i < election.candidates.length; i += 1) {
+            if (election.candidates[i]._id.toString() === req.params.candidate) {
+              election.candidates.splice(i, 1);
+              
+              break;
+            }
+          }
+          
+          election.save(function (err) {
+            if (err) {
+              res.send(500, {
+                message: 'Unable to remvoe candidate',
+                errors: [err]
+              });
+            } else {
+              res.send(200, {ok: true});
+            }
+          });
+        } else {
+          res.send(404, {
+            message: 'Unable to find candidate.',
+            userErrors: ['The specified candidate could not be found.']
+          });
+        }
       }
     });
   }

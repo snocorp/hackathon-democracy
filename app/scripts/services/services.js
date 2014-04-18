@@ -11,8 +11,8 @@ democracyServices.factory('Election', ['$resource',
     'use strict';
     
     return $resource('/elections/:id', {id: '@_id'}, {
-      'create': {method:'POST'},
-      'save': {method:'PUT'}
+      'create': {method: 'POST'},
+      'save': {method: 'PUT'}
     });
   }]);
 
@@ -109,34 +109,40 @@ democracyServices.factory('Candidate', ['$resource',
     'use strict';
     
     return $resource('/elections/:electionId/candidates/:id', {electionId: '@electionId', id: '@_id'}, {
-      'create': {method:'POST'},
-      'save': {method:'PUT'}
+      'create': {method: 'POST'},
+      'save': {method: 'PUT'}
     });
   }]);
 
-democracyServices.factory('CandidateService', ['Candidate',
-  function (Candidate) {
+democracyServices.factory('CandidateService', ['Candidate', '$q',
+  function (Candidate, $q) {
     'use strict';
     
     function addCandidate(args) {
       
-      var newCandidate = new Candidate({
+      var c, newCandidate = new Candidate({
         electionId: args.electionId,
         name: args.name,
         description: args.description
       });
 
-      return newCandidate.$create();
+      c = newCandidate.$create();
+      
+      c.then(function (candidate) {
+        candidate.electionId = args.electionId;
+      });
+      
+      return c;
     }
     
     
     function getCandidates(electionId) {
-      var candidates;
+      var candidates, deferred;
       if (electionId) {
         candidates = Candidate.query({electionId: electionId});
       } else {
-        var deferred = $q.defer();
-        candidates = []
+        deferred = $q.defer();
+        candidates = [];
         candidates.$promise = deferred.promise;
         
         deferred.resolve([]);
@@ -145,7 +151,7 @@ democracyServices.factory('CandidateService', ['Candidate',
       candidates.$promise.then(function (candidates) {
         candidates.forEach(function (c) {
           c.electionId = electionId;
-        })
+        });
       });
       
       return candidates;

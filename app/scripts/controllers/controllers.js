@@ -208,13 +208,13 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
           name: newCandidate.name,
           description: newCandidate.description
         }).then(
-            function (newCandidate) {
-              $scope.candidates.push(newCandidate);
-            },
-            function (response) {
-              $scope.candidatesError = response.data;
-            }
-          );
+          function (newCandidate) {
+            $scope.candidates.push(newCandidate);
+          },
+          function (response) {
+            $scope.candidatesError = response.data;
+          }
+        );
       }
     );
   }
@@ -245,7 +245,15 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
     if (!name) {
       return "Name is required";
     }
+    
+    candidate.name = name;
+    candidate.$save();
       
+    return true;
+  }
+  
+  function updateCandidateDescription(candidate, description) {
+    candidate.description = description;
     candidate.$save();
       
     return true;
@@ -259,6 +267,7 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
   $scope.clearError = clearError;
   $scope.showAddCandidate = showAddCandidate;
   $scope.showRemoveCandidates = showRemoveCandidates;
+  $scope.updateCandidateDescription = updateCandidateDescription;
   $scope.updateCandidateName = updateCandidateName;
 }]);
 
