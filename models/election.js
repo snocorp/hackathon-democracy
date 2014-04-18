@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 
-function electionModule(Election, Candidate) {
+function electionModule(Election) {
   'use strict';
   
   /**
@@ -124,9 +124,7 @@ function electionModule(Election, Candidate) {
         res.send({'error': err});
       } else {
         if (election) {
-            res.send({ok: true});
-            
-          Candidate.remove({electionId: req.params.election}).exec();
+          res.send({ok: true});
         } else {
           res.send(404, {
             message: 'Unable to remove election.',

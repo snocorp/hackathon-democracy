@@ -11,7 +11,8 @@ democracyServices.factory('Election', ['$resource',
     'use strict';
     
     return $resource('/elections/:id', {id: '@_id'}, {
-        'save': {method:'PUT'}
+      'create': {method:'POST'},
+      'save': {method:'PUT'}
     });
   }]);
 
@@ -32,7 +33,7 @@ democracyServices.factory('ElectionService', ['Election',
         name: name
       });
 
-      return newElection.$save();
+      return newElection.$create();
     }
 
     /**

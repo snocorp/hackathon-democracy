@@ -2,39 +2,70 @@
 
 var mongoose = require('mongoose');
 
-function candidateModule(Candidate) {
+function candidateModule(Election) {
   'use strict';
   
   function index(req, res) {
-    Candidate.find({electionId: req.params.election}).exec(function (err, candidates) {
+    Election.findById(req.params.election, function (err, election) {
       res.set('Content-Type', 'application/json');
       if (err) {
-        res.send({'error': err});
+        res.send(500, {
+          message: 'Unable to load candidates.',
+          errors: [err]
+        });
+      } else if (election) {
+        res.send(200, election.candidates);
       } else {
-        res.send(candidates);
+        res.send(404, {
+          message: 'Unable to find election.',
+          userErrors: ['The specified election could not be found.']
+        });
       }
     });
   }
 
   function create(req, res) {
-    var candidate, c = {electionId: req.params.election};
-    if (req.body.name) {
-      c.name = req.body.name;
-    } else {
-      c.name = "No Name";
-    }
-    
-    if (req.body.description) {
-      c.description = req.body.description;
-    }
-    
-    candidate = new Candidate(c);
-    candidate.save(function (err) {
-      res.set('Content-Type', 'application/json');
+    Election.findById(req.params.election, function (err, election) {
+      
+      var c = {};
       if (err) {
-        res.send({'error': err});
+        res.send(500, {
+          message: 'Unable to load election.',
+          errors: [err]
+        });
+      } else if (election) {
+        c.id = mongoose.Types.ObjectId();
+        if (req.body.name) {
+          c.name = req.body.name;
+        } else {
+          c.name = "No Name";
+        }
+    
+        if (req.body.description) {
+          c.description = req.body.description;
+        }
+        
+        if (!election.candidates) {
+          election.candidates = [];
+        }
+
+        election.candidates.push(c);
+        election.save(function (err) {
+          res.set('Content-Type', 'application/json');
+          if (err) {
+            res.send(500, {
+              message: 'Unable to save candidate',
+              errors: [err]
+            });
+          } else {
+            res.send(200, c);
+          }
+        });
       } else {
-        res.send(candidate);
+        res.send(404, {
+          message: 'Unable to find election.',
+          userErrors: ['The specified election could not be found.']
+        });
       }
     });
   }
