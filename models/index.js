@@ -22,18 +22,15 @@ var mongoose = require('mongoose');
     db.on('error', console.error.bind(console, 'connection error:'));
 
     electionSchema = mongoose.Schema({
-      name: String
+      name: String,
+      candidates: [{
+        _id: mongoose.Schema.Types.ObjectId,
+        name: String,
+        description: String
+      }]
     });
 
     classes.Election = mongoose.model('Election', electionSchema);
-
-    candidateSchema = mongoose.Schema({
-      electionId: mongoose.Schema.Types.ObjectId,
-      name: String,
-      description: String
-    });
-
-    classes.Candidate = mongoose.model('Candidate', candidateSchema);
 
     voterSchema = mongoose.Schema({
       electionId: mongoose.Schema.Types.ObjectId
@@ -41,9 +38,9 @@ var mongoose = require('mongoose');
 
     classes.Voter = mongoose.model('Voter', voterSchema);
 
-    elections = app.resource('elections', require('./election')(classes.Election, classes.Candidate), { load: classes.Election.get });
-    candidates = app.resource('candidates', require('./candidate')(classes.Candidate), { load: classes.Candidate.get });
-    voters = app.resource('voters', require('./voter')(app, classes.Voter), { load: classes.Voter.get });
+    elections = app.resource('elections', require('./election')(classes.Election));
+    candidates = app.resource('candidates', require('./candidate')(classes.Election));
+    voters = app.resource('voters', require('./voter')(app, classes.Voter));
 
     elections.add(candidates);
     elections.add(voters);

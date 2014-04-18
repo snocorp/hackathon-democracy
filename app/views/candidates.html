@@ -4,12 +4,20 @@
     <button type="button" class="btn btn-default navbar-btn" title="Create a new candidate" ng-click="showAddCandidate()"><span class="glyphicon glyphicon-plus"></span> Add Candidate</button>
     <button type="button" class="btn btn-default navbar-btn" title="Remove one or more candidates"  ng-click="showRemoveCandidates()"><span class="glyphicon glyphicon-minus"></span> Remove Candidates</button>
   </div>
+  <alert ng-show="candidatesError" type="'danger'" close="clearError()">
+    <span>{{candidatesError.message}}</span>
+    <ul ng-show="candidatesError.userErrors">
+      <li ng-repeat="error in candidatesError.userErrors">{{error}}</li>
+    </ul>
+  </alert>
   <div ng-repeat="candidate in candidates" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">{{candidate.name}}</h3>
+      <h3 class="panel-title" editable-text="candidate.name" onbeforesave="updateCandidateName(candidate, $data)">
+        <span class="glyphicon glyphicon-pencil pull-right"></span> {{candidate.name}}
+      </h3>
     </div>
     <div class="panel-body">
-      <p>{{candidate.description}}</p>
+      <p editable-textarea="candidate.description" e-rows="3" e-cols="50" onbeforesave="updateCandidateDescription(candidate, $data)"><span class="glyphicon glyphicon-pencil pull-right"></span> {{candidate.description}}</p>
     </div>
   </div>
 </div>

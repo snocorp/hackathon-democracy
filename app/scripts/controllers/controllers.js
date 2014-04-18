@@ -57,7 +57,7 @@ democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionS
 
     modalInstance.result.then(
       function (newElectionName) {
-        ElectionService.addElection(newElectionName)
+        ElectionService.addElection({name: newElectionName})
           .then(
             function (newElection) {
               $scope.elections.push(newElection);
@@ -162,25 +162,17 @@ democracyControllers.controller('RemoveCandidatesCtrl', ['$scope', '$modalInstan
   
 }]);
 
-democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$modal', 'Candidate', function ($scope, $routeParams, $modal, Candidate) {
+democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$modal', 'Candidate', 'CandidateService', function ($scope, $routeParams, $modal, Candidate, CandidateService) {
   'use strict';
 
-  if ($routeParams.electionId) {
-    $scope.candidates = Candidate.query({electionId: $routeParams.electionId});
-  } else {
-    $scope.candidates = [];
-  }
-  
-  function addCandidate(newCandidateOptions) {
-    var newCandidate = new Candidate({
-      electionId: $routeParams.electionId,
-      name: newCandidateOptions.name,
-      description: newCandidateOptions.description
+  function loadCandidates() {
+    var c = CandidateService.getCandidates($routeParams.electionId);
+    
+    c.$promise.then(null, function (response) {
+      $scope.candidatesError = response.data;
     });
     
-    newCandidate.$save();
-    
-    $scope.candidates.push(newCandidate);
+    return c;
   }
   
   function removeCandidates(candidates) {
@@ -211,7 +203,18 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
 
     modalInstance.result.then(
       function (newCandidate) {
-        addCandidate(newCandidate);
+        CandidateService.addCandidate({
+          electionId: $routeParams.electionId,
+          name: newCandidate.name,
+          description: newCandidate.description
+        }).then(
+          function (newCandidate) {
+            $scope.candidates.push(newCandidate);
+          },
+          function (response) {
+            $scope.candidatesError = response.data;
+          }
+        );
       }
     );
   }
@@ -238,8 +241,34 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
     );
   }
   
+  function updateCandidateName(candidate, name) {
+    if (!name) {
+      return "Name is required";
+    }
+    
+    candidate.name = name;
+    candidate.$save();
+      
+    return true;
+  }
+  
+  function updateCandidateDescription(candidate, description) {
+    candidate.description = description;
+    candidate.$save();
+      
+    return true;
+  }
+  
+  function clearError() {
+    $scope.candidatesError = null;
+  }
+  
+  $scope.candidates = loadCandidates();
+  $scope.clearError = clearError;
   $scope.showAddCandidate = showAddCandidate;
   $scope.showRemoveCandidates = showRemoveCandidates;
+  $scope.updateCandidateDescription = updateCandidateDescription;
+  $scope.updateCandidateName = updateCandidateName;
 }]);
 
 democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
