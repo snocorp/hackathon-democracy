@@ -34,7 +34,7 @@ function candidateModule(Election) {
           errors: [err]
         });
       } else if (election) {
-        c.id = mongoose.Types.ObjectId();
+        c._id = mongoose.Types.ObjectId();
         if (req.body.name) {
           c.name = req.body.name;
         } else {
@@ -71,11 +71,85 @@ function candidateModule(Election) {
   }
 
   function show(req, res) {
-    res.send('show candidate ' + req.params.candidate);
+    Election.findById(req.params.election, function (err, election) {
+      if (election) {
+        var candidate = null, i;
+        if (election.candidates) {
+          for (i = 0; i < election.candidates.length; i += 1) {
+            if (election.candidates[i]._id.toString() === req.params.candidate) {
+              candidate = election.candidates[i];
+              break;
+            }
+          }
+        }
+        
+        if (candidate) {
+          res.send(200, candidate);
+        } else {
+          res.send(404, {
+            message: 'Unable to find candidate.',
+            userErrors: ['The specified candidate could not be found.']
+          });
+        }
+      } else {
+        res.send(404, {
+          message: 'Unable to find election.',
+          userErrors: ['The specified election could not be found.']
+        });
+      }
+    });
   }
 
   function update(req, res) {
-    res.send('update candidate ' + req.params.candidate);
+    Election.findById(req.params.election, function (err, election) {
+      if (err) {
+        res.send(500, {
+          message: 'Unable to save candidate',
+          errors: [err]
+        });
+      } else if (election) {
+        var candidate = null, i;
+        if (election.candidates) {
+          for (i = 0; i < election.candidates.length; i += 1) {
+            if (election.candidates[i]._id.toString() === req.params.candidate) {
+              candidate = election.candidates[i];
+              break;
+            }
+          }
+        }
+        
+        if (candidate) {
+          if (typeof req.params.name !== 'undefined') {
+            candidate.name = req.params.name;
+          }
+          
+          if (typeof req.params.description !== 'undefined') {
+            candidate.description = req.params.description;
+          }
+          
+          election.save(function (err) {
+            if (err) {
+              res.send(500, {
+                message: 'Unable to save candidate',
+                errors: [err]
+              });
+            } else {
+              res.send(200, candidate);
+            }
+          });
+        } else {
+          res.send(404, {
+            message: 'Unable to find candidate.',
+            userErrors: ['The specified candidate could not be found.']
+          });
+        }
+      } else {
+        res.send(404, {
+          message: 'Unable to find election.',
+          userErrors: ['The specified election could not be found.']
+        });
+      }
+    });
   }
 
   function destroy(req, res) {

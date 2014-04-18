@@ -27,3 +27,25 @@ h2.editable-click span {
 h2.editable-click:hover span {
   display: inline;
 }
+
+h3.editable-click {
+  color: inherit;
+  border-bottom: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 2px;
+  margin: -3px;
+}
+
+h3.editable-click:hover {
+  color: inherit;
+  border: 1px solid #ccc;
+}
+
+h3.editable-click span {
+  display: none;
+}
+
+h3.editable-click:hover span {
+  display: inline;
+}

@@ -106,7 +106,7 @@ function electionModule(Election) {
         });
       } else {
         if (election) {
-          res.send(election);
+          res.send(200, election);
         } else {
           res.send(404, {
             message: 'Unable to update election.',
