@@ -13,7 +13,7 @@ for hackathons
 * Install [bower](http://bower.io/) `npm install -g bower`
 * Install npm dependencies `npm install`
 * Install bower dependencies `bower install`
-* Run the server `grunt server`
+* Run the server `node server`
 
 ### Configuration
 
@@ -25,7 +25,7 @@ Configuration is stored in a file called config.json at the root of the applicat
 * smtp\_user: the username for the SMTP service (default null)
 * smtp\_password: the password for the SMTP service (default null)
 
-Note that all smtp settings must be configured for mailing voter registrations.
+Note that smtp_service and smtp_user settings must be configured for mailing voter registrations. If smtp_password is not configured, you will be prompted when you start the server.
 
 In addition, the system can be started in development mode
 
