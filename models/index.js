@@ -23,24 +23,24 @@ var mongoose = require('mongoose');
 
     electionSchema = mongoose.Schema({
       name: String,
+      anonymous: Boolean,
       candidates: [{
         _id: mongoose.Schema.Types.ObjectId,
         name: String,
         description: String
+      }],
+      voters: [{
+        _id: mongoose.Schema.Types.ObjectId,
+        email: String,
+        name: String
       }]
     });
 
     classes.Election = mongoose.model('Election', electionSchema);
 
-    voterSchema = mongoose.Schema({
-      electionId: mongoose.Schema.Types.ObjectId
-    });
-
-    classes.Voter = mongoose.model('Voter', voterSchema);
-
     elections = app.resource('elections', require('./election')(classes.Election));
     candidates = app.resource('candidates', require('./candidate')(classes.Election));
-    voters = app.resource('voters', require('./voter')(app, classes.Voter));
+    voters = app.resource('voters', require('./voter')(app, classes.Election));
 
     elections.add(candidates);
     elections.add(voters);

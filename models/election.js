@@ -50,6 +50,12 @@ function electionModule(Election) {
       e.name = "No Name";
     }
     
+    if (req.body.anonymous) {
+      e.anonymous = true;
+    } else {
+      e.anonymous = false;
+    }
+    
     if (valid) {
       election = new Election(e);
       election.save(function (err) {

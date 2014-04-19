@@ -32,7 +32,6 @@ democracyControllers.controller('RemoveElectionsCtrl', ['$scope', '$modalInstanc
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-  
 }]);
 
 democracyControllers.controller('ElectionsCtrl', ['$scope', '$modal', 'ElectionService', function ($scope, $modal, ElectionService) {
@@ -146,7 +145,6 @@ democracyControllers.controller('AddCandidateCtrl', ['$scope', '$modalInstance',
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-  
 }]);
 
 democracyControllers.controller('RemoveCandidatesCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
@@ -159,10 +157,9 @@ democracyControllers.controller('RemoveCandidatesCtrl', ['$scope', '$modalInstan
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-  
 }]);
 
-democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$modal', 'Candidate', 'CandidateService', function ($scope, $routeParams, $modal, Candidate, CandidateService) {
+democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$modal', 'CandidateService', function ($scope, $routeParams, $modal, CandidateService) {
   'use strict';
 
   function loadCandidates() {
@@ -173,25 +170,6 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
     });
     
     return c;
-  }
-  
-  function removeCandidates(candidates) {
-    var i;
-    for (i = 0; i < candidates.length; i += 1) {
-      if (candidates[i].softDelete) {
-        candidates[i].$delete();
-        
-        candidates.splice(i, 1);
-        i -= 1;
-      }
-    }
-  }
-  
-  function clearSoftDelete() {
-    var i;
-    for (i = 0; i < $scope.candidates.length; i += 1) {
-      $scope.candidates[i].softDelete = false;
-    }
   }
   
   function showAddCandidate() {
@@ -233,10 +211,10 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
 
     modalInstance.result.then(
       function (candidates) {
-        removeCandidates(candidates);
+        CandidateService.removeCandidates(candidates);
       },
       function () {
-        clearSoftDelete();
+        CandidateService.clearSoftDelete($scope.candidates);
       }
     );
   }
@@ -313,47 +291,17 @@ democracyControllers.controller('RemoveVotersCtrl', ['$scope', '$modalInstance',
   
 }]);
 
-democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal', 'Voter', function ($scope, $routeParams, $modal, Voter) {
+democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal', 'VoterService', function ($scope, $routeParams, $modal, VoterService) {
   'use strict';
 
-  if ($routeParams.electionId) {
-    $scope.voters = Voter.query({electionId: $routeParams.electionId});
-  } else {
-    $scope.voters = [];
-  }
-  
-  function addVoters(newVoters) {
-    var newVoter, i;
-    for (i = 0; i < newVoters.length; i += 1) {
-      newVoter = new Voter({
-        electionId: $routeParams.electionId,
-        name: newVoters[i].name,
-        email: newVoters[i].email
-      });
+  function loadVoters() {
+    var v = VoterService.getVoters($routeParams.electionId);
     
-      newVoter.$save();
+    v.$promise.then(null, function (response) {
+      $scope.votersError = response.data;
+    });
     
-      $scope.voters.push(newVoter);
-    }
-  }
-  
-  function removeVoters(voters) {
-    var i;
-    for (i = 0; i < voters.length; i += 1) {
-      if (voters[i].softDelete) {
-        voters[i].$delete();
-        
-        voters.splice(i, 1);
-        i -= 1;
-      }
-    }
-  }
-  
-  function clearSoftDelete() {
-    var i;
-    for (i = 0; i < $scope.voters.length; i += 1) {
-      $scope.voters[i].softDelete = false;
-    }
+    return v;
   }
   
   function showAddVoters() {
@@ -365,7 +313,19 @@ democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal
 
     modalInstance.result.then(
       function (newVoters) {
-        addVoters(newVoters);
+        VoterService.addVoters({
+          electionId: $routeParams.electionId,
+          newVoters: newVoters
+        }).forEach(function (v) {
+          v.then(
+            function (newVoter) {
+              $scope.voters.push(newVoter);
+            },
+            function (response) {
+              $scope.votersError = response.data;
+            }
+          );
+        });
       }
     );
   }
@@ -384,14 +344,20 @@ democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal
 
     modalInstance.result.then(
       function (voters) {
-        removeVoters(voters);
+        VoterService.removeVoters(voters);
       },
       function () {
-        clearSoftDelete();
+        VoterService.clearSoftDelete($scope.voters);
       }
     );
   }
   
+  function clearError() {
+    $scope.votersError = null;
+  }
+  
+  $scope.voters = loadVoters();
+  $scope.clearError = clearError;
   $scope.showAddVoters = showAddVoters;
   $scope.showRemoveVoters = showRemoveVoters;
 }]);

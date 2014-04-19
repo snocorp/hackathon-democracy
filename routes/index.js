@@ -6,11 +6,20 @@ module.exports = function (app) {
   'use strict';
 
   
-  app.get('/vote/:voterId', function (req, res, next) {
+  app.get('/election/:electionId/vote/:voterId', function (req, res, next) {
     
-    models.Voter.findById(req.params.voterId, function (err, voter) {
-      if (!err && voter) {
-        req.session.voterId = req.params.voterId;
+    models.Election.findById(req.params.electionId, function (err, election) {
+      var i;
+      if (!err && election) {
+        if (election.voters) {
+          for (i = 0; i < election.voters.length; i += 1) {
+            if (election.voters[i]._id.toString() === req.params.voterId) {
+              req.session.voterId = req.params.voterId;
+              
+              break;
+            }
+          }
+        }
       }
       
       res.writeHead(302, {'Location': '/'});

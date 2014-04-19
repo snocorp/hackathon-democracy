@@ -4,6 +4,12 @@
     <button type="button" class="btn btn-default navbar-btn" title="Setup new voters" ng-click="showAddVoters()"><span class="glyphicon glyphicon-plus"></span> Add Voters</button>
     <button type="button" class="btn btn-default navbar-btn" title="Remove one or more voters" ng-click="showRemoveVoters()"><span class="glyphicon glyphicon-minus"></span> Remove Voters</button>
   </div>
+  <alert ng-show="votersError" type="'danger'" close="clearError()">
+    <span>{{votersError.message}}</span>
+    <ul ng-show="votersError.userErrors">
+      <li ng-repeat="error in votersError.userErrors">{{error}}</li>
+    </ul>
+  </alert>
   <ul class="list-group">
     <li ng-repeat="voter in voters" class="list-group-item">
       {{voter._id}}

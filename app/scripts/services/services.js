@@ -156,10 +156,31 @@ democracyServices.factory('CandidateService', ['Candidate', '$q',
       
       return candidates;
     }
+  
+    function removeCandidates(candidates) {
+      var i;
+      for (i = 0; i < candidates.length; i += 1) {
+        if (candidates[i].softDelete) {
+          candidates[i].$delete();
+
+          candidates.splice(i, 1);
+          i -= 1;
+        }
+      }
+    }
+
+    function clearSoftDelete(candidates) {
+      var i;
+      for (i = 0; i < candidates.length; i += 1) {
+        candidates[i].softDelete = false;
+      }
+    }
     
     return {
       addCandidate: addCandidate,
-      getCandidates: getCandidates
+      clearSoftDelete: clearSoftDelete,
+      getCandidates: getCandidates,
+      removeCandidates: removeCandidates
     };
   }]);
 
@@ -167,5 +188,81 @@ democracyServices.factory('Voter', ['$resource',
   function ($resource) {
     'use strict';
     
-    return $resource('/elections/:electionId/voters/:id', {electionId: '@electionId', id: '@_id'}, {});
+    return $resource('/elections/:electionId/voters/:id', {electionId: '@electionId', id: '@_id'}, {
+      'create': {method: 'POST'},
+      'save': {method: 'PUT'}
+    });
+  }]);
+
+democracyServices.factory('VoterService', ['Voter', '$q',
+  function (Voter, $q) {
+    'use strict';
+    
+    function addVoters(args) {
+      
+      var i, v = [], newVoter;
+      for (i = 0; i < args.newVoters.length; i += 1) {
+        newVoter = new Voter({
+          electionId: args.electionId,
+          name: args.newVoters[i].name,
+          email: args.newVoters[i].email
+        });
+
+        v.push(newVoter.$create());
+
+        v[i].then(function (voter) {
+          voter.electionId = args.electionId;
+        });
+      }
+      
+      return v;
+    }
+    
+    
+    function getVoters(electionId) {
+      var voters, deferred;
+      if (electionId) {
+        voters = Voter.query({electionId: electionId});
+      } else {
+        deferred = $q.defer();
+        voters = [];
+        voters.$promise = deferred.promise;
+        
+        deferred.resolve([]);
+      }
+      
+      voters.$promise.then(function (voters) {
+        voters.forEach(function (v) {
+          v.electionId = electionId;
+        });
+      });
+      
+      return voters;
+    }
+  
+    function removeVoters(voters) {
+      var i;
+      for (i = 0; i < voters.length; i += 1) {
+        if (voters[i].softDelete) {
+          voters[i].$delete();
+
+          voters.splice(i, 1);
+          i -= 1;
+        }
+      }
+    }
+
+    function clearSoftDelete(voters) {
+      var i;
+      for (i = 0; i < voters.length; i += 1) {
+        voters[i].softDelete = false;
+      }
+    }
+    
+    return {
+      addVoters: addVoters,
+      clearSoftDelete: clearSoftDelete,
+      getVoters: getVoters,
+      removeVoters: removeVoters
+    };
   }]);

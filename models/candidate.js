@@ -175,7 +175,7 @@ function candidateModule(Election) {
           election.save(function (err) {
             if (err) {
               res.send(500, {
-                message: 'Unable to remvoe candidate',
+                message: 'Unable to remove candidate',
                 errors: [err]
               });
             } else {
