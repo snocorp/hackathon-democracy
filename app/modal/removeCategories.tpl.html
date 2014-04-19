@@ -1,0 +1,18 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
+  <h4 class="modal-title" id="removeCategoriesLabel">Remove Categories</h4>
+</div>
+<div class="modal-body">
+  <from role="form">
+    <div class="checkbox" ng-repeat="category in categories">
+      <label>
+        <input type="checkbox" ng-model="category.softDelete" name="c{{category._id}}"/>
+        {{category.name}}
+      </label>
+    </div>
+  </from>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" ng-click="ok()">Remove</button>
+  <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+</div>
