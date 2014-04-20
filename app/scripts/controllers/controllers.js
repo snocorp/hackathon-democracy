@@ -249,6 +249,129 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
   $scope.updateCandidateName = updateCandidateName;
 }]);
 
+/**
+ * Add Category controller
+ */
+democracyControllers.controller('AddCategoryCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+  'use strict';
+  
+  $scope.newCategoryName = '';
+  $scope.newCategoryDescription = '';
+
+  $scope.ok = function () {
+    $modalInstance.close({
+      name: this.newCategoryName,
+      description: this.newCategoryDescription
+    });
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}]);
+
+democracyControllers.controller('RemoveCategoriesCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+  'use strict';
+
+  $scope.ok = function () {
+    $modalInstance.close($scope.categories);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}]);
+
+democracyControllers.controller('CategoriesCtrl', ['$scope', '$routeParams', '$modal', 'CategoryService', function ($scope, $routeParams, $modal, CategoryService) {
+  'use strict';
+
+  function loadCategories() {
+    var c = CategoryService.getCategories($routeParams.electionId);
+    
+    c.$promise.then(null, function (response) {
+      $scope.categoriesError = response.data;
+    });
+    
+    return c;
+  }
+  
+  function showAddCategory() {
+    var modalInstance = $modal.open({
+      templateUrl: 'modal/addCategory.tpl.html',
+      scope: $scope,
+      controller: 'AddCategoryCtrl'
+    });
+
+    modalInstance.result.then(
+      function (newCategory) {
+        CategoryService.addCategory({
+          electionId: $routeParams.electionId,
+          name: newCategory.name,
+          description: newCategory.description
+        }).then(
+          function (newCategory) {
+            $scope.categories.push(newCategory);
+          },
+          function (response) {
+            $scope.categoriesError = response.data;
+          }
+        );
+      }
+    );
+  }
+  
+  function showRemoveCategories() {
+    var modalInstance = $modal.open({
+      templateUrl: 'modal/removeCategories.tpl.html',
+      scope: $scope,
+      controller: 'RemoveCategoriesCtrl',
+      resolve: {
+        categories: function () {
+          return $scope.categories;
+        }
+      }
+    });
+
+    modalInstance.result.then(
+      function (categories) {
+        CategoryService.removeCategories(categories);
+      },
+      function () {
+        CategoryService.clearSoftDelete($scope.categories);
+      }
+    );
+  }
+  
+  function updateCategoryName(category, name) {
+    if (!name) {
+      return "Name is required";
+    }
+    
+    category.name = name;
+    category.$save();
+      
+    return true;
+  }
+  
+  function updateCategoryDescription(category, description) {
+    category.description = description;
+    category.$save();
+      
+    return true;
+  }
+  
+  function clearError() {
+    $scope.categoriesError = null;
+  }
+  
+  $scope.categories = loadCategories();
+  $scope.clearError = clearError;
+  $scope.showAddCategory = showAddCategory;
+  $scope.showRemoveCategories = showRemoveCategories;
+  $scope.updateCategoryDescription = updateCategoryDescription;
+  $scope.updateCategoryName = updateCategoryName;
+}]);
+
 democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
   

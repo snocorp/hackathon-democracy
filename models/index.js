@@ -1,4 +1,4 @@
-/*jslint node: true, indent: 2 */
+/*jslint node: true, nomen: true, indent: 2 */
 
 var mongoose = require('mongoose');
 
@@ -17,6 +17,7 @@ var mongoose = require('mongoose');
       db = mongoose.connection,
       elections,
       candidates,
+      categories,
       voters;
 
     db.on('error', console.error.bind(console, 'connection error:'));
@@ -24,6 +25,11 @@ var mongoose = require('mongoose');
     electionSchema = mongoose.Schema({
       name: String,
       anonymous: Boolean,
+      categories: [{
+        _id: mongoose.Schema.Types.ObjectId,
+        name: String,
+        description: String
+      }],
       candidates: [{
         _id: mongoose.Schema.Types.ObjectId,
         name: String,
@@ -40,9 +46,11 @@ var mongoose = require('mongoose');
 
     elections = app.resource('elections', require('./election')(classes.Election));
     candidates = app.resource('candidates', require('./candidate')(classes.Election));
+    categories = app.resource('categories', require('./category')(classes.Election));
     voters = app.resource('voters', require('./voter')(app, classes.Election));
 
     elections.add(candidates);
+    elections.add(categories);
     elections.add(voters);
   }
   

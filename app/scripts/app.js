@@ -20,6 +20,10 @@
           templateUrl: 'views/candidates.html',
           controller: 'CandidatesCtrl'
         })
+        .when('/elections/:electionId/categories', {
+          templateUrl: 'views/categories.html',
+          controller: 'CategoriesCtrl'
+        })
         .when('/elections/:electionId/voters', {
           templateUrl: 'views/voters.html',
           controller: 'VotersCtrl'

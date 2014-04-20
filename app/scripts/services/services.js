@@ -148,8 +148,8 @@ democracyServices.factory('CandidateService', ['Candidate', '$q',
         deferred.resolve([]);
       }
       
-      candidates.$promise.then(function (candidates) {
-        candidates.forEach(function (c) {
+      candidates.$promise.then(function (loadedCandidates) {
+        loadedCandidates.forEach(function (c) {
           c.electionId = electionId;
         });
       });
@@ -184,6 +184,89 @@ democracyServices.factory('CandidateService', ['Candidate', '$q',
     };
   }]);
 
+/**
+ * Category resource
+ */
+democracyServices.factory('Category', ['$resource',
+  function ($resource) {
+    'use strict';
+    
+    return $resource('/elections/:electionId/categories/:id', {electionId: '@electionId', id: '@_id'}, {
+      'create': {method: 'POST'},
+      'save': {method: 'PUT'}
+    });
+  }]);
+
+democracyServices.factory('CategoryService', ['Category', '$q',
+  function (Category, $q) {
+    'use strict';
+    
+    function addCategory(args) {
+      
+      var c, newCategory = new Category({
+        electionId: args.electionId,
+        name: args.name,
+        description: args.description
+      });
+
+      c = newCategory.$create();
+      
+      c.then(function (category) {
+        category.electionId = args.electionId;
+      });
+      
+      return c;
+    }
+    
+    
+    function getCategories(electionId) {
+      var categories, deferred;
+      if (electionId) {
+        categories = Category.query({electionId: electionId});
+      } else {
+        deferred = $q.defer();
+        categories = [];
+        categories.$promise = deferred.promise;
+        
+        deferred.resolve([]);
+      }
+      
+      categories.$promise.then(function (loadedCategories) {
+        loadedCategories.forEach(function (c) {
+          c.electionId = electionId;
+        });
+      });
+      
+      return categories;
+    }
+  
+    function removeCategories(categories) {
+      var i;
+      for (i = 0; i < categories.length; i += 1) {
+        if (categories[i].softDelete) {
+          categories[i].$delete();
+
+          categories.splice(i, 1);
+          i -= 1;
+        }
+      }
+    }
+
+    function clearSoftDelete(categories) {
+      var i;
+      for (i = 0; i < categories.length; i += 1) {
+        categories[i].softDelete = false;
+      }
+    }
+    
+    return {
+      addCategory: addCategory,
+      clearSoftDelete: clearSoftDelete,
+      getCategories: getCategories,
+      removeCategories: removeCategories
+    };
+  }]);
+
 democracyServices.factory('Voter', ['$resource',
   function ($resource) {
     'use strict';
@@ -200,7 +283,11 @@ democracyServices.factory('VoterService', ['Voter', '$q',
     
     function addVoters(args) {
       
-      var i, v = [], newVoter;
+      var i, v = [], newVoter,
+        updateElectionId = function (voter) {
+          voter.electionId = args.electionId;
+        };
+      
       for (i = 0; i < args.newVoters.length; i += 1) {
         newVoter = new Voter({
           electionId: args.electionId,
@@ -210,10 +297,25 @@ democracyServices.factory('VoterService', ['Voter', '$q',
 
         v.push(newVoter.$create());
 
-        v[i].then(function (voter) {
-          voter.electionId = args.electionId;
-        });
+        v[i].then(updateElectionId);
       }
+      
+      return v;
+    }
+    
+    /**
+     * Returns the requested voter.
+     *
+     * @param {string} electionId - the id of the election the voter is registered in
+     *
+     * @returns {Voter} Voter
+     */
+    function getVoter(electionId, id) {
+      var v = Voter.get({electionId: electionId, id: id});
+      
+      v.$promise.then(function (voter) {
+        voter.electionId = electionId;
+      });
       
       return v;
     }
