@@ -218,6 +218,24 @@ democracyServices.factory('CategoryService', ['Category', '$q',
       return c;
     }
     
+    /**
+     * Returns the requested category.
+     *
+     * @param {string} electionId - the id of the election the category is in
+     * @param {string} id - the id of the category
+     *
+     * @returns {Category} Category
+     */
+    function getCategory(electionId, id) {
+      var c = Category.get({electionId: electionId, id: id});
+      
+      c.$promise.then(function (category) {
+        category.electionId = electionId;
+      });
+      
+      return c;
+    }
+    
     
     function getCategories(electionId) {
       var categories, deferred;
@@ -263,6 +281,7 @@ democracyServices.factory('CategoryService', ['Category', '$q',
       addCategory: addCategory,
       clearSoftDelete: clearSoftDelete,
       getCategories: getCategories,
+      getCategory: getCategory,
       removeCategories: removeCategories
     };
   }]);

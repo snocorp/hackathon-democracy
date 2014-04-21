@@ -10,11 +10,11 @@
     
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 
-    <!-- build:css({.tmp,app}) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
+    <!-- build:css({.tmp,app}) styles/vote.css -->
+    <link rel="stylesheet" href="styles/vote.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="voteApp">
+  <body ng-app="voteApp" ng-controller="AppCtrl">
     <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -28,6 +28,14 @@
         </div>
     
       <div class="collapse navbar-collapse" id="mainNavBar">
+        <ul class="nav navbar-nav" ng-show="categories.length > 0">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Categories <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li ng-repeat="category in categories"><a href="#/elections/{{category.electionId}}/categories/{{category._id}}">{{category.name}}</a></li>
+            </ul>
+          </li>
+        </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="/admin">Admin</a></li>
           <li><a href="/logout">Log out</a></li>
@@ -51,6 +59,7 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/vote/app.js"></script>
     <script src="scripts/vote/controllers/controllers.js"></script>
+    <script src="scripts/common/services/services.js"></script>
     <!-- endbuild -->
   </body>
 </html>
