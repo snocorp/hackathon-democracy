@@ -277,8 +277,15 @@ democracyServices.factory('Voter', ['$resource',
     });
   }]);
 
-democracyServices.factory('VoterService', ['Voter', '$q',
-  function (Voter, $q) {
+democracyServices.factory('VoterInfo', ['$resource',
+  function ($resource) {
+    'use strict';
+    
+    return $resource('/voterinfo', {}, {});
+  }]);
+
+democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
+  function (Voter, VoterInfo, $q) {
     'use strict';
     
     function addVoters(args) {
@@ -307,6 +314,7 @@ democracyServices.factory('VoterService', ['Voter', '$q',
      * Returns the requested voter.
      *
      * @param {string} electionId - the id of the election the voter is registered in
+     * @param {string} id - the id of the voter
      *
      * @returns {Voter} Voter
      */
@@ -318,6 +326,26 @@ democracyServices.factory('VoterService', ['Voter', '$q',
       });
       
       return v;
+    }
+    
+    /**
+     * Returns the current voter.
+     *
+     * @returns {promise} A promise that resolves to a Voter
+     */
+    function getCurrentVoter() {
+      var deferred = $q.defer(),
+        v = VoterInfo.get({});
+      
+      if (v) {
+        v.$promise.then(function (voterInfo) {
+          deferred.resolve(getVoter(voterInfo.electionId, voterInfo.voterId));
+        });
+      } else {
+        deferred.reject("Current user is not a registered voter.");
+      }
+      
+      return deferred.promise;
     }
     
     
@@ -364,6 +392,7 @@ democracyServices.factory('VoterService', ['Voter', '$q',
     return {
       addVoters: addVoters,
       clearSoftDelete: clearSoftDelete,
+      getCurrentVoter: getCurrentVoter,
       getVoters: getVoters,
       removeVoters: removeVoters
     };

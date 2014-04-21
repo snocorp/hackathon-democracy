@@ -6,6 +6,21 @@ var democracyControllers = angular.module('democracyControllers', []);
 democracyControllers.controller('AppCtrl', ['$scope', '$location', '$modal', 'ElectionService', 'VoterService', function ($scope, $location, $modal, ElectionService, VoterService) {
   'use strict';
   
+  function loadVoter() {
+    VoterService.getCurrentVoter().then(
+      function (v) {
+        v.$promise.then(
+          function (voter) {
+            $scope.voter = voter;
+          },
+          function (response) {
+            $scope.appError = response.data;
+          }
+        );
+      }
+    );
+  }
+  
   function showAddElection() {
     var modalInstance = $modal.open({
       templateUrl: 'modal/addElection.tpl.html',
@@ -30,6 +45,8 @@ democracyControllers.controller('AppCtrl', ['$scope', '$location', '$modal', 'El
   
   $scope.showAddElection = showAddElection;
   $scope.voter = null;
+  
+  loadVoter();
 }]);
 
 democracyControllers.controller('IndexCtrl', ['$scope', '$modal', '$location', 'ElectionService', function ($scope, $modal, $location, ElectionService) {

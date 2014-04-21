@@ -9,13 +9,12 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css">
 
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="democracyApp" ng-controller="AppCtrl">
+  <body ng-app="voteApp">
     <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -28,15 +27,11 @@
           <a class="navbar-brand" href="#">Hackathon Democracy</a>
         </div>
     
-        <div class="collapse navbar-collapse" id="mainNavBar">
-          <ul class="nav navbar-nav">
-            <li><a href="#/elections">Elections</a></li>
-            <li ng-show="voter"><a href="/vote">Vote</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><button type="button" class="btn btn-default navbar-btn" title="Create a new election" ng-click="showAddElection()"><span class="glyphicon glyphicon-plus"></span> Create Election</button></li>
-          </ul>
-        </div>
+      <div class="collapse navbar-collapse" id="mainNavBar">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/admin">Admin</a></li>
+          <li><a href="/logout">Log out</a></li>
+        </ul>
       </div>
     </nav>
     <div class="container" ng-view=""></div>
@@ -51,14 +46,11 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
-    <script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="scripts/index/app.js"></script>
-    <script src="scripts/index/controllers/controllers.js"></script>
-    <script src="scripts/index/services/services.js"></script>
-    <script src="scripts/index/directives/directives.js"></script>
+    <script src="scripts/vote/app.js"></script>
+    <script src="scripts/vote/controllers/controllers.js"></script>
     <!-- endbuild -->
   </body>
 </html>
