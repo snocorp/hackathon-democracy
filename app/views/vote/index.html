@@ -1,0 +1,17 @@
+<div>
+  <h2>{{election.name}} Candidates</h2>
+  <alert ng-show="candidatesError" type="'danger'" close="clearError()">
+    <span>{{candidatesError.message}}</span>
+    <ul ng-show="candidatesError.userErrors">
+      <li ng-repeat="error in candidatesError.userErrors">{{error}}</li>
+    </ul>
+  </alert>
+  <div ng-repeat="candidate in candidates" class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">{{candidate.name}}</h4>
+    </div>
+    <div class="panel-body">
+      <p>{{candidate.description}}</p>
+    </div>
+  </div>
+</div>

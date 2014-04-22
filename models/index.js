@@ -5,8 +5,6 @@ var mongoose = require('mongoose');
 (function (module) {
   'use strict';
   
-  var classes = {};
-  
   function configure(app) {
   
     mongoose.connect(app.get('mongodb url'));
@@ -15,6 +13,7 @@ var mongoose = require('mongoose');
       candidateSchema,
       voterSchema,
       db = mongoose.connection,
+      Election,
       elections,
       candidates,
       categories,
@@ -38,24 +37,29 @@ var mongoose = require('mongoose');
       voters: [{
         _id: mongoose.Schema.Types.ObjectId,
         email: String,
-        name: String
+        name: String,
+        votes: [{
+          categoryId: mongoose.Schema.Types.ObjectId,
+          candidateId: mongoose.Schema.Types.ObjectId
+        }]
       }]
     });
 
-    classes.Election = mongoose.model('Election', electionSchema);
+    Election = mongoose.model('Election', electionSchema);
 
-    elections = app.resource('elections', require('./election')(classes.Election));
-    candidates = app.resource('candidates', require('./candidate')(classes.Election));
-    categories = app.resource('categories', require('./category')(classes.Election));
-    voters = app.resource('voters', require('./voter')(app, classes.Election));
+    elections = app.resource('elections', require('./election')(Election));
+    candidates = app.resource('candidates', require('./candidate')(Election));
+    categories = app.resource('categories', require('./category')(Election));
+    voters = app.resource('voters', require('./voter')(app, Election));
 
     elections.add(candidates);
     elections.add(categories);
     elections.add(voters);
+    
+    require('./voterinfo')(app, Election);
   }
   
   module.exports = {
-    configure: configure,
-    classes: classes
+    configure: configure
   };
 }(module));

@@ -3,6 +3,10 @@ body {
     margin-top: 10px;
 }
 
+.well-heading {
+  margin-top: 0;
+}
+
 .form-group textarea {
   resize: vertical;
 }

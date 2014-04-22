@@ -218,6 +218,24 @@ democracyServices.factory('CategoryService', ['Category', '$q',
       return c;
     }
     
+    /**
+     * Returns the requested category.
+     *
+     * @param {string} electionId - the id of the election the category is in
+     * @param {string} id - the id of the category
+     *
+     * @returns {Category} Category
+     */
+    function getCategory(electionId, id) {
+      var c = Category.get({electionId: electionId, id: id});
+      
+      c.$promise.then(function (category) {
+        category.electionId = electionId;
+      });
+      
+      return c;
+    }
+    
     
     function getCategories(electionId) {
       var categories, deferred;
@@ -263,6 +281,7 @@ democracyServices.factory('CategoryService', ['Category', '$q',
       addCategory: addCategory,
       clearSoftDelete: clearSoftDelete,
       getCategories: getCategories,
+      getCategory: getCategory,
       removeCategories: removeCategories
     };
   }]);
@@ -273,12 +292,20 @@ democracyServices.factory('Voter', ['$resource',
     
     return $resource('/elections/:electionId/voters/:id', {electionId: '@electionId', id: '@_id'}, {
       'create': {method: 'POST'},
-      'save': {method: 'PUT'}
+      'save': {method: 'PUT'},
+      'vote': {method: 'GET', url: '/vote/category/:categoryId/candidate/:candidateId'}
     });
   }]);
 
-democracyServices.factory('VoterService', ['Voter', '$q',
-  function (Voter, $q) {
+democracyServices.factory('VoterInfo', ['$resource',
+  function ($resource) {
+    'use strict';
+    
+    return $resource('/voterinfo', {}, {});
+  }]);
+
+democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
+  function (Voter, VoterInfo, $q) {
     'use strict';
     
     function addVoters(args) {
@@ -307,6 +334,7 @@ democracyServices.factory('VoterService', ['Voter', '$q',
      * Returns the requested voter.
      *
      * @param {string} electionId - the id of the election the voter is registered in
+     * @param {string} id - the id of the voter
      *
      * @returns {Voter} Voter
      */
@@ -318,6 +346,26 @@ democracyServices.factory('VoterService', ['Voter', '$q',
       });
       
       return v;
+    }
+    
+    /**
+     * Returns the current voter.
+     *
+     * @returns {promise} A promise that resolves to a Voter
+     */
+    function getCurrentVoter() {
+      var deferred = $q.defer(),
+        v = VoterInfo.get({});
+      
+      if (v) {
+        v.$promise.then(function (voterInfo) {
+          deferred.resolve(getVoter(voterInfo.electionId, voterInfo.voterId));
+        });
+      } else {
+        deferred.reject("Current user is not a registered voter.");
+      }
+      
+      return deferred.promise;
     }
     
     
@@ -361,10 +409,16 @@ democracyServices.factory('VoterService', ['Voter', '$q',
       }
     }
     
+    function vote(categoryId, candidateId) {
+      return Voter.vote({categoryId: categoryId, candidateId: candidateId}).$promise;
+    }
+    
     return {
       addVoters: addVoters,
       clearSoftDelete: clearSoftDelete,
+      getCurrentVoter: getCurrentVoter,
       getVoters: getVoters,
-      removeVoters: removeVoters
+      removeVoters: removeVoters,
+      vote: vote
     };
   }]);

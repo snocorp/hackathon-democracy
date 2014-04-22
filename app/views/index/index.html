@@ -1,0 +1,22 @@
+<div class="jumbotron">
+  <h1>Democracy</h1>
+  <h2>for hackathons</h2>
+</div>
+<div class="row">
+  <div class="col-md-4" ng-repeat="election in elections">
+    <div class="well well-sm">
+      <h3 class="well-heading">{{election.name}}</h3>
+      <div class="list-group">
+        <a class="list-group-item" href="#/elections/{{election._id}}/categories">Categories: {{election.categories ? election.categories.length : 0}}</a>
+        <a class="list-group-item" href="#/elections/{{election._id}}/candidates">Candidates: {{election.candidates ? election.candidates.length : 0}}</a>
+        <a class="list-group-item" href="#/elections/{{election._id}}/voters">Voters: {{election.voters ? election.voters.length : 0}}</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+      <h3 class="well-heading">Need a new election?</h3>
+      <button type="button" class="btn btn-primary" title="Create a new election" ng-click="showAddElection()"><span class="glyphicon glyphicon-plus"></span> Create Election</button>
+    </div>
+  </div>
+</div>

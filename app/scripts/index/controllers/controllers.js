@@ -1,10 +1,91 @@
-/*jslint browser: true, indent: 2 */
+/*jslint browser: true, nomen: true, indent: 2 */
 /*global angular*/
 
 var democracyControllers = angular.module('democracyControllers', []);
 
-democracyControllers.controller('IndexCtrl', [function () {
+democracyControllers.controller('AppCtrl', ['$scope', '$location', '$modal', 'ElectionService', 'VoterService', function ($scope, $location, $modal, ElectionService, VoterService) {
   'use strict';
+  
+  function loadVoter() {
+    VoterService.getCurrentVoter().then(
+      function (v) {
+        v.$promise.then(
+          function (voter) {
+            $scope.voter = voter;
+          },
+          function (response) {
+            $scope.appError = response.data;
+          }
+        );
+      }
+    );
+  }
+  
+  function showAddElection() {
+    var modalInstance = $modal.open({
+      templateUrl: 'modal/addElection.tpl.html',
+      scope: $scope,
+      controller: 'AddElectionCtrl'
+    });
+
+    modalInstance.result.then(
+      function (newElectionName) {
+        ElectionService.addElection({name: newElectionName})
+          .then(
+            function (newElection) {
+              $location.path('/elections/' + newElection._id);
+            },
+            function (response) {
+              $scope.electionError = response.data;
+            }
+          );
+      }
+    );
+  }
+  
+  $scope.showAddElection = showAddElection;
+  $scope.voter = null;
+  
+  loadVoter();
+}]);
+
+democracyControllers.controller('IndexCtrl', ['$scope', '$modal', '$location', 'ElectionService', function ($scope, $modal, $location, ElectionService) {
+  'use strict';
+  
+  function loadElections() {
+    var e = ElectionService.getElections();
+    
+    e.$promise.then(null, function (response) {
+      $scope.electionError = response.data;
+    });
+    
+    return e;
+  }
+  
+  function showAddElection() {
+    var modalInstance = $modal.open({
+      templateUrl: 'modal/addElection.tpl.html',
+      scope: $scope,
+      controller: 'AddElectionCtrl'
+    });
+
+    modalInstance.result.then(
+      function (newElectionName) {
+        ElectionService.addElection({name: newElectionName})
+          .then(
+            function (newElection) {
+              $location.path('/elections/' + newElection._id);
+            },
+            function (response) {
+              $scope.electionError = response.data;
+            }
+          );
+      }
+    );
+  }
+  
+  $scope.elections = loadElections();
+  $scope.showAddElection = showAddElection;
 }]);
 
 democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
@@ -243,6 +324,7 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
   
   $scope.candidates = loadCandidates();
   $scope.clearError = clearError;
+  $scope.electionId = $routeParams.electionId;
   $scope.showAddCandidate = showAddCandidate;
   $scope.showRemoveCandidates = showRemoveCandidates;
   $scope.updateCandidateDescription = updateCandidateDescription;
@@ -366,6 +448,7 @@ democracyControllers.controller('CategoriesCtrl', ['$scope', '$routeParams', '$m
   
   $scope.categories = loadCategories();
   $scope.clearError = clearError;
+  $scope.electionId = $routeParams.electionId;
   $scope.showAddCategory = showAddCategory;
   $scope.showRemoveCategories = showRemoveCategories;
   $scope.updateCategoryDescription = updateCategoryDescription;
@@ -481,6 +564,7 @@ democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal
   
   $scope.voters = loadVoters();
   $scope.clearError = clearError;
+  $scope.electionId = $routeParams.electionId;
   $scope.showAddVoters = showAddVoters;
   $scope.showRemoveVoters = showRemoveVoters;
 }]);
