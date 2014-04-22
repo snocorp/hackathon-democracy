@@ -2,10 +2,10 @@
 <p class="lead">{{category.description}}</p>
 <div ng-repeat="candidate in candidates" class="panel panel-default">
   <div class="panel-heading">
-    <h4 class="panel-title">{{candidate.name}}</h4>
+    <h4 class="panel-title">{{candidate.name}} (<span ng-bind="candidate.voteCount"></span>)</h4>
   </div>
   <div class="panel-body">
-    <button class="btn btn-default pull-right">Vote for {{candidate.name}}</button>
+    <button ng-class="'pull-right btn ' + ((myVote && myVote.candidateId === candidate._id) ? 'btn-primary' : 'btn-default')" ng-disabled="myVote && myVote.candidateId === candidate._id" ng-click="vote(candidate)">Vote for {{candidate.name}}</button>
     <p>{{candidate.description}}</p>
   </div>
 </div>

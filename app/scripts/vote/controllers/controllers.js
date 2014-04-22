@@ -67,17 +67,58 @@ voteControllers.controller('IndexCtrl', ['$scope', 'VoterService', 'ElectionServ
 }]);
 
 
-voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'CandidateService', 'CategoryService', function ($scope, $routeParams, CandidateService, CategoryService) {
+voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'CandidateService', 'CategoryService', 'VoterService', 'ElectionService', function ($scope, $routeParams, CandidateService, CategoryService, VoterService, ElectionService) {
   'use strict';
   
+  function loadVotes() {
+    VoterService.getCurrentVoter().then(
+      function (v) {
+        v.$promise.then(function (voter) {
+          var e = ElectionService.getElection($routeParams.electionId);
+
+          e.$promise.then(
+            function (election) {
+              $scope.candidates.forEach(function (candidate) {
+                var i, j, v;
+                
+                candidate.voteCount = 0;
+                
+                for (i = 0; i < election.voters.length; i += 1) {
+                  v = election.voters[i];
+                  for (j = 0; j < v.votes.length; j += 1) {
+                    if (candidate._id === v.votes[j].candidateId && $scope.category._id === v.votes[j].categoryId) {
+                      if (candidate.voteCount) {
+                        candidate.voteCount += 1;
+                      } else {
+                        candidate.voteCount = 1;
+                      }
+                      
+                      if (v._id === voter._id) {
+                        $scope.myVote = v.votes[j];
+                      }
+
+                      break;
+                    }
+                  }
+                }
+              });
+            },
+            function (response) {
+              $scope.categoryError = response.data;
+            }
+          );
+        });
+      }
+    );
+  }
+  
+  
   function loadCandidates() {
-    var c = CandidateService.getCandidates($routeParams.electionId);
+    $scope.candidates = CandidateService.getCandidates($routeParams.electionId);
     
-    c.$promise.then(null, function (response) {
-      $scope.candidatesError = response.data;
+    $scope.candidates.$promise.then(loadVotes, function (response) {
+      $scope.categoryError = response.data;
     });
-    
-    return c;
   }
   
   
@@ -91,6 +132,19 @@ voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'Candidate
     return c;
   }
   
-  $scope.candidates = loadCandidates();
+  function vote(candidate) {
+    VoterService.vote($scope.category._id, candidate._id).then(
+      loadVotes,
+      function (response) {
+        $scope.categoryError = response.data;
+      }
+    );
+  }
+  
+  $scope.candidates = [];
   $scope.category = loadCategory();
+  $scope.myVote = null;
+  $scope.vote = vote;
+  
+  loadCandidates();
 }]);

@@ -37,7 +37,11 @@ var mongoose = require('mongoose');
       voters: [{
         _id: mongoose.Schema.Types.ObjectId,
         email: String,
-        name: String
+        name: String,
+        votes: [{
+          categoryId: mongoose.Schema.Types.ObjectId,
+          candidateId: mongoose.Schema.Types.ObjectId
+        }]
       }]
     });
 

@@ -324,6 +324,7 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
   
   $scope.candidates = loadCandidates();
   $scope.clearError = clearError;
+  $scope.electionId = $routeParams.electionId;
   $scope.showAddCandidate = showAddCandidate;
   $scope.showRemoveCandidates = showRemoveCandidates;
   $scope.updateCandidateDescription = updateCandidateDescription;
@@ -447,6 +448,7 @@ democracyControllers.controller('CategoriesCtrl', ['$scope', '$routeParams', '$m
   
   $scope.categories = loadCategories();
   $scope.clearError = clearError;
+  $scope.electionId = $routeParams.electionId;
   $scope.showAddCategory = showAddCategory;
   $scope.showRemoveCategories = showRemoveCategories;
   $scope.updateCategoryDescription = updateCategoryDescription;
@@ -562,6 +564,7 @@ democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal
   
   $scope.voters = loadVoters();
   $scope.clearError = clearError;
+  $scope.electionId = $routeParams.electionId;
   $scope.showAddVoters = showAddVoters;
   $scope.showRemoveVoters = showRemoveVoters;
 }]);

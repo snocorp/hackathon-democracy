@@ -292,7 +292,8 @@ democracyServices.factory('Voter', ['$resource',
     
     return $resource('/elections/:electionId/voters/:id', {electionId: '@electionId', id: '@_id'}, {
       'create': {method: 'POST'},
-      'save': {method: 'PUT'}
+      'save': {method: 'PUT'},
+      'vote': {method: 'GET', url: '/vote/category/:categoryId/candidate/:candidateId'}
     });
   }]);
 
@@ -408,11 +409,16 @@ democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
       }
     }
     
+    function vote(categoryId, candidateId) {
+      return Voter.vote({categoryId: categoryId, candidateId: candidateId}).$promise;
+    }
+    
     return {
       addVoters: addVoters,
       clearSoftDelete: clearSoftDelete,
       getCurrentVoter: getCurrentVoter,
       getVoters: getVoters,
-      removeVoters: removeVoters
+      removeVoters: removeVoters,
+      vote: vote
     };
   }]);
