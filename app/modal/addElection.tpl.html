@@ -4,11 +4,17 @@
 </div>
 <div class="modal-body">
   <form role="form">
-    <div class="form-group">
-      <label for="addElectionName">Name</label>
+    <div ng-class="'form-group ' + (error && error.name ? 'has-error' : '')">
+      <label class="control-label" for="addElectionName">Name</label>
       <input type="text" class="form-control" id="addElectionName" ng-model="newElectionName" placeHolder="Enter name" xng-focus="true"/>
     </div>
   </form>
+  <div class="alert alert-danger" ng-show="error && error.messages.length > 0">
+    <ul ng-show="errors.length > 1">
+      <li ng-repeat="error in error.messages">{{error}}</li>
+    </ul>
+    <span ng-show="error.messages.length === 1">{{error.messages[0]}}</span>
+  </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-primary" ng-click="ok()">Add</button>

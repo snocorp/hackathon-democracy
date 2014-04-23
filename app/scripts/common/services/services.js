@@ -19,8 +19,8 @@ democracyServices.factory('Election', ['$resource',
 /**
  * Election service.
  */
-democracyServices.factory('ElectionService', ['Election',
-  function (Election) {
+democracyServices.factory('ElectionService', ['$q', 'Election',
+  function ($q, Election) {
     'use strict';
     
     /**
@@ -81,6 +81,33 @@ democracyServices.factory('ElectionService', ['Election',
     function saveElection(election) {
       election.$save();
     }
+    
+    /**
+     * Validates the properties of the given election.
+     */
+    function validateElection(election) {
+      var error = {messages: []},
+        deferred = $q.defer();
+      
+      
+      if (!election) {
+        error.messages.push('Election could not be validated');
+      } else if (!election.name) {
+        error.messages.push('Name is required');
+        error.name = true;
+      } else if (election.name.length > 40) {
+        error.messages.push('Name cannot be more than 40 characters');
+        error.name = true;
+      }
+      
+      if (error.messages.length > 0) {
+        deferred.reject(error);
+      } else {
+        deferred.resolve();
+      }
+      
+      return deferred.promise;
+    }
 
     /**
      * Clears the soft delete mark from the given array of elections.
@@ -100,7 +127,8 @@ democracyServices.factory('ElectionService', ['Election',
       getElection: getElection,
       getElections: getElections,
       removeElections: removeElections,
-      saveElection: saveElection
+      saveElection: saveElection,
+      validateElection: validateElection
     };
   }]);
 

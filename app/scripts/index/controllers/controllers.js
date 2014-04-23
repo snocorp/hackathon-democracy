@@ -88,13 +88,24 @@ democracyControllers.controller('IndexCtrl', ['$scope', '$modal', '$location', '
   $scope.showAddElection = showAddElection;
 }]);
 
-democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', 'ElectionService', function ($scope, $modalInstance, ElectionService) {
   'use strict';
   
   $scope.newElectionName = '';
 
   $scope.ok = function () {
-    $modalInstance.close(this.newElectionName);
+    var self = this;
+    ElectionService.validateElection({
+      name: self.newElectionName
+    }).then(
+      function () {
+        $modalInstance.close(self.newElectionName);
+      },
+      function (error) {
+        $scope.error = error;
+      }
+    )
+    
   };
 
   $scope.cancel = function () {
