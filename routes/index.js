@@ -1,9 +1,11 @@
 /*jslint node: true, nomen: true, indent: 2 */
 
-var models = require('../models').classes;
+var when = require('when');
 
 module.exports = function (app) {
   'use strict';
+  
+  var deferred = when.defer();
 
   app.get('/', function (req, res, next) {
     if (req.session.voterInfo && !req.session.voterInfo.admin) {
@@ -12,4 +14,8 @@ module.exports = function (app) {
       res.render('index');
     }
   });
+  
+  deferred.resolve();
+  
+  return deferred.promise;
 };
