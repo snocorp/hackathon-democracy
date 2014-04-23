@@ -1,15 +1,15 @@
 /*jslint node: true, nomen: true, indent: 2 */
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+  when = require('when');
 
-(function (module) {
+module.exports = function (app) {
   'use strict';
   
-  function configure(app) {
-  
-    mongoose.connect(app.get('mongodb url'));
+  mongoose.connect(app.get('mongodb url'));
 
-    var electionSchema,
+  var deferred = when.defer(),
+      electionSchema,
       candidateSchema,
       voterSchema,
       db = mongoose.connection,
@@ -19,47 +19,46 @@ var mongoose = require('mongoose');
       categories,
       voters;
 
-    db.on('error', console.error.bind(console, 'connection error:'));
+  db.on('error', console.error.bind(console, 'connection error:'));
 
-    electionSchema = mongoose.Schema({
+  electionSchema = mongoose.Schema({
+    name: String,
+    anonymous: Boolean,
+    categories: [{
+      _id: mongoose.Schema.Types.ObjectId,
       name: String,
-      anonymous: Boolean,
-      categories: [{
-        _id: mongoose.Schema.Types.ObjectId,
-        name: String,
-        description: String
-      }],
-      candidates: [{
-        _id: mongoose.Schema.Types.ObjectId,
-        name: String,
-        description: String
-      }],
-      voters: [{
-        _id: mongoose.Schema.Types.ObjectId,
-        email: String,
-        name: String,
-        votes: [{
-          categoryId: mongoose.Schema.Types.ObjectId,
-          candidateId: mongoose.Schema.Types.ObjectId
-        }]
+      description: String
+    }],
+    candidates: [{
+      _id: mongoose.Schema.Types.ObjectId,
+      name: String,
+      description: String
+    }],
+    voters: [{
+      _id: mongoose.Schema.Types.ObjectId,
+      email: String,
+      name: String,
+      votes: [{
+        categoryId: mongoose.Schema.Types.ObjectId,
+        candidateId: mongoose.Schema.Types.ObjectId
       }]
-    });
+    }]
+  });
 
-    Election = mongoose.model('Election', electionSchema);
+  Election = mongoose.model('Election', electionSchema);
 
-    elections = app.resource('elections', require('./election')(Election));
-    candidates = app.resource('candidates', require('./candidate')(Election));
-    categories = app.resource('categories', require('./category')(Election));
-    voters = app.resource('voters', require('./voter')(app, Election));
+  elections = app.resource('elections', require('./election')(Election));
+  candidates = app.resource('candidates', require('./candidate')(Election));
+  categories = app.resource('categories', require('./category')(Election));
+  voters = app.resource('voters', require('./voter')(app, Election));
 
-    elections.add(candidates);
-    elections.add(categories);
-    elections.add(voters);
-    
-    require('./voterinfo')(app, Election);
-  }
+  elections.add(candidates);
+  elections.add(categories);
+  elections.add(voters);
+
+  require('./voterinfo')(app, Election);
   
-  module.exports = {
-    configure: configure
-  };
-}(module));
+  deferred.resolve();
+  
+  return deferred.promise;
+};

@@ -6,6 +6,8 @@ var config = require('../config'),
 module.exports = function (app) {
   'use strict';
   
+  var configDeferred = when.defer();
+  
   function requestPassword() {
     var deferred = when.defer(),
       rl;
@@ -32,6 +34,8 @@ module.exports = function (app) {
   function checkConfig() {
     var deferred = when.defer();
     
+    console.log('Checking configuration');
+    
     //check for email configuration
     //https://github.com/andris9/nodemailer#well-known-services-for-smtp
     if (config.smtp_service && config.smtp_user) {
@@ -52,5 +56,9 @@ module.exports = function (app) {
   checkConfig().then(function () {
     require('./development')(app);
     require('./production')(app);
+    
+    configDeferred.resolve();
   });
+  
+  return configDeferred.promise;
 };

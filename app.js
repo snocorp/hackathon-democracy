@@ -14,13 +14,16 @@ function createApp() {
   
   app.directory = __dirname;
 
-  when.join(
-    require('./config/environments')(app),
-    require('./routes')(app),
-    require('./models').configure(app)
-  );
-
-  deferred.resolve(app);
+  when(require('./config/environments')(app)).then(function () {
+    when.join(
+      require('./routes')(app),
+      require('./models')(app)
+    ).then(function () {
+      console.log('Application loaded');
+    
+      deferred.resolve(app);
+    });
+  });
   
   return deferred.promise;
 }
