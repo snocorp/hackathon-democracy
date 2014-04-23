@@ -102,7 +102,7 @@ function electionModule(Election) {
   function update(req, res) {
     var e = {
         name: req.body.name
-    };
+      };
     
     Election.findByIdAndUpdate(req.params.election, e, function (err, election) {
       res.set('Content-Type', 'application/json');

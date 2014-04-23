@@ -1,15 +1,28 @@
 /*jslint node: true, nomen: true, indent: 2 */
 
 var express = require('express'),
-  path = require('path');
+  path = require('path'),
+  when = require('when');
 
 require('express-resource');
 
-var app = express();
-app.directory = __dirname;
+function createApp() {
+  'use strict';
+  
+  var deferred = when.defer(),
+    app = express();
+  
+  app.directory = __dirname;
 
-require('./config/environments')(app);
-require('./routes')(app);
-require('./models').configure(app);
+  when.join(
+    require('./config/environments')(app),
+    require('./routes')(app),
+    require('./models').configure(app)
+  );
 
-module.exports = app;
+  deferred.resolve(app);
+  
+  return deferred.promise;
+}
+
+module.exports = createApp();

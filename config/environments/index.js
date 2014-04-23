@@ -7,13 +7,12 @@ module.exports = function (app) {
   'use strict';
   
   function requestPassword() {
-    'use strict';
     var deferred = when.defer(),
       rl;
 
     //if the password is defined in the config
     if (config.smtp_password) {
-      deferred.resolve(config.admin_password);
+      deferred.resolve(config.smtp_password);
     } else {
       rl = readline.createInterface({
         input: process.stdin,
@@ -30,16 +29,28 @@ module.exports = function (app) {
     return deferred.promise;
   }
   
-  //check for email configuration
-  //https://github.com/andris9/nodemailer#well-known-services-for-smtp
-  if (config.smtp_service && config.smtp_user) {
-    requestPassword().then(function (password) {
-      config.smtp_password = password;
-    });
-  } else {
-    console.warn("SMTP not configured. Voter registrations will not be sent.");
+  function checkConfig() {
+    var deferred = when.defer();
+    
+    //check for email configuration
+    //https://github.com/andris9/nodemailer#well-known-services-for-smtp
+    if (config.smtp_service && config.smtp_user) {
+      requestPassword().then(function (password) {
+        config.smtp_password = password;
+        
+        deferred.resolve();
+      });
+    } else {
+      console.warn("SMTP not configured. Voter registrations will not be sent.");
+      
+      deferred.resolve();
+    }
+    
+    return deferred.promise;
   }
   
-  require('./development')(app);
-  require('./production')(app);
+  checkConfig().then(function () {
+    require('./development')(app);
+    require('./production')(app);
+  });
 };
