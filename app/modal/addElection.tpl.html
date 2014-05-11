@@ -10,7 +10,7 @@
     </div>
   </form>
   <div class="alert alert-danger" ng-show="error && error.messages.length > 0">
-    <ul ng-show="errors.length > 1">
+    <ul ng-show="error.messages.length > 1">
       <li ng-repeat="error in error.messages">{{error}}</li>
     </ul>
     <span ng-show="error.messages.length === 1">{{error.messages[0]}}</span>

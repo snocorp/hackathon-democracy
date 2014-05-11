@@ -3,6 +3,7 @@
   <h4 class="modal-title" id="removeElectionsLabel">Remove Elections</h4>
 </div>
 <div class="modal-body">
+  <a href="javascript:void(0)" ng-click="selectAll()">Select all</a> | <a href="javascript:void(0)" ng-click="selectNone()">Select none</a>
   <from role="form">
     <div class="checkbox" ng-repeat="election in elections">
       <label>

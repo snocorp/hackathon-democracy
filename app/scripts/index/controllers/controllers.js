@@ -116,6 +116,18 @@ democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', 
 
 democracyControllers.controller('RemoveElectionsCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
+  
+  $scope.selectAll = function() {
+    $scope.elections.forEach(function (e) {
+      e.softDelete = true;
+    });
+  };
+  
+  $scope.selectNone = function() {
+    $scope.elections.forEach(function (e) {
+      e.softDelete = false;
+    });
+  };
 
   $scope.ok = function () {
     $modalInstance.close($scope.elections);

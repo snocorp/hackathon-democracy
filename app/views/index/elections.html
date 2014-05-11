@@ -12,10 +12,12 @@
   </alert>
   <ul class="list-group">
     <li ng-repeat="election in elections" class="list-group-item">
-      <a href="#/elections/{{election._id}}">{{election.name}}</a> |
-      <a href="#/elections/{{election._id}}/candidates">candidates</a> |
-      <a href="#/elections/{{election._id}}/categories">categories</a> |
-      <a href="#/elections/{{election._id}}/voters">voters</a>
+      <a href="#/elections/{{election._id}}">{{election.name}}</a>
+      <div class="list-group">
+        <a href="#/elections/{{election._id}}/candidates" class="list-group-item">candidates</a>
+        <a href="#/elections/{{election._id}}/categories" class="list-group-item">categories</a>
+        <a href="#/elections/{{election._id}}/voters" class="list-group-item">voters</a>
+      </div>
     </li>
   </ul>
 </div>

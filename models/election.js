@@ -27,7 +27,8 @@ function electionModule(Election) {
 
   /**
    * Creates a new election. Uses the request body to create the election.
-   *  - name: The name of the election, uses "No Name" if not provided
+   *  - name: The name of the election, uses "No Name" if not provided, must be less than 40 characters
+   *  - anonymous: Whether or not the election is anonymous, not yet used
    *
    * @param {Request} req - http request
    * @param {Response} res - http response
@@ -78,6 +79,13 @@ function electionModule(Election) {
     }
   }
 
+  /**
+   * Finds the requested election and returns a JSON object.
+   * - election: The id of the election
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function show(req, res) {
     Election.findById(req.params.election, function (err, election) {
       res.set('Content-Type', 'application/json');
@@ -99,6 +107,14 @@ function electionModule(Election) {
     });
   }
 
+  /**
+   * Updates the given election if parameters are provided.
+   * - election: The id of the election to be updated
+   * - name: The new name of the election
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function update(req, res) {
     var e = {
         name: req.body.name
@@ -123,6 +139,13 @@ function electionModule(Election) {
     });
   }
 
+  /**
+   * Deletes the given election.
+   * - election: The id of the election to delete
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function destroy(req, res) {
     Election.findByIdAndRemove(req.params.election, function (err, election) {
       res.set('Content-Type', 'application/json');
