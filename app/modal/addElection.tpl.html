@@ -6,6 +6,7 @@
   <form role="form">
     <div ng-class="'form-group ' + (error && error.name ? 'has-error' : '')">
       <label class="control-label" for="addElectionName">Name</label>
+      <p ng-bind="newElectionName.length" ng-class="'pull-right ' + (newElectionName.length > 40 ? 'text-danger' : 'text-muted')"></p>
       <input type="text" class="form-control" id="addElectionName" ng-model="newElectionName" placeHolder="Enter name" xng-focus="true"/>
     </div>
   </form>
