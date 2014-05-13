@@ -5,6 +5,13 @@ var mongoose = require('mongoose');
 function candidateModule(Election) {
   'use strict';
   
+  /**
+   * Finds all candidates for the given election and sends back a JSON array.
+   * - election: The id of the election
+   *
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function index(req, res) {
     Election.findById(req.params.election, function (err, election) {
       res.set('Content-Type', 'application/json');
@@ -24,43 +31,73 @@ function candidateModule(Election) {
     });
   }
 
+  /**
+   * Creates a new candidate for the given election.
+   * - election: The id of the election
+   */
   function create(req, res) {
     Election.findById(req.params.election, function (err, election) {
       
-      var c = {};
+      var c = {},
+        valid = true,
+        errors = [];
+      
       if (err) {
         res.send(500, {
           message: 'Unable to load election.',
           errors: [err]
         });
       } else if (election) {
+        //give the candidate an id
         c._id = mongoose.Types.ObjectId();
+        
+        
         if (req.body.name) {
-          c.name = req.body.name;
+          //validate name length
+          if (req.body.name.toString().length > 40) {
+            valid = false;
+            errors.push("Name must be no more than 40 characters.");
+          } else {
+            c.name = req.body.name;
+          }
         } else {
           c.name = "No Name";
         }
     
         if (req.body.description) {
-          c.description = req.body.description;
+          //validate description length
+          if (req.body.description.toString().length > 10000) {
+            valid = false;
+            errors.push("Description must be no more than 10000 characters.");
+          } else {
+            c.description = req.body.description;
+          }
         }
         
-        if (!election.candidates) {
-          election.candidates = [];
-        }
-
-        election.candidates.push(c);
-        election.save(function (err) {
-          res.set('Content-Type', 'application/json');
-          if (err) {
-            res.send(500, {
-              message: 'Unable to save candidate',
-              errors: [err]
-            });
-          } else {
-            res.send(200, c);
+        if (valid) {
+          if (!election.candidates) {
+            election.candidates = [];
           }
-        });
+
+          election.candidates.push(c);
+          election.save(function (err) {
+            res.set('Content-Type', 'application/json');
+            if (err) {
+              res.send(500, {
+                message: 'Unable to save candidate',
+                errors: [err]
+              });
+            } else {
+              res.send(200, c);
+            }
+          });
+        } else {
+          res.set('Content-Type', 'application/json');
+          res.send(400, {
+            message: 'Unable to create candidate.',
+            userErrors: errors
+          });
+        }
       } else {
         res.send(404, {
           message: 'Unable to find election.',
@@ -70,6 +107,14 @@ function candidateModule(Election) {
     });
   }
 
+  /**
+   * Finds the requested candidate and returns a JSON object.
+   * - election: The id of the election
+   * - candidate: The id of the candidate
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function show(req, res) {
     Election.findById(req.params.election, function (err, election) {
       if (election) {
@@ -100,6 +145,14 @@ function candidateModule(Election) {
     });
   }
 
+  /**
+   * Updates the given candidate if parameters are provided.
+   * - election: The id of the election to be updated
+   * - name: The new name of the election
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function update(req, res) {
     Election.findById(req.params.election, function (err, election) {
       if (err) {
