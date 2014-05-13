@@ -79,7 +79,7 @@ democracyServices.factory('ElectionService', ['$q', 'Election',
      * @param {Election} - election to be saved
      */
     function saveElection(election) {
-      election.$save();
+      return election.$save();
     }
     
     /**

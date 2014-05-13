@@ -108,7 +108,7 @@ function electionModule(Election) {
   }
 
   /**
-   * Updates the given election if parameters are provided.
+   * Updates the given election with parameters provided.
    * - election: The id of the election to be updated
    * - name: The new name of the election
    * 
@@ -116,27 +116,49 @@ function electionModule(Election) {
    * @param {Response} res - http response
    */
   function update(req, res) {
-    var e = {
-        name: req.body.name
-      };
+    var e = {},
+      valid = true,
+      errors = [];
     
-    Election.findByIdAndUpdate(req.params.election, e, function (err, election) {
-      res.set('Content-Type', 'application/json');
-      if (err) {
-        res.send({
-          errors: [err]
-        });
+    if (req.body.name) {
+      //validate name length
+      if (req.body.name.toString().length > 40) {
+        valid = false;
+        errors.push("Name must be no more than 40 characters.");
       } else {
-        if (election) {
-          res.send(200, election);
-        } else {
-          res.send(404, {
-            message: 'Unable to update election.',
-            userErrors: ['The specified election could not be found.']
-          });
-        }
+        e.name = req.body.name;
       }
-    });
+    } else {
+      valid = false;
+      errors.push("Name is required.");
+    }
+    
+    if (valid) {
+      Election.findByIdAndUpdate(req.params.election, e, function (err, election) {
+        res.set('Content-Type', 'application/json');
+        if (err) {
+          res.send(500, {
+            message: 'Unable to update election.',
+            errors: [err]
+          });
+        } else {
+          if (election) {
+            res.send(200, election);
+          } else {
+            res.send(404, {
+              message: 'Unable to update election.',
+              userErrors: ['The specified election could not be found.']
+            });
+          }
+        }
+      });
+    } else {
+      res.set('Content-Type', 'application/json');
+      res.send(400, {
+        message: 'Unable to update election.',
+        userErrors: errors
+      });
+    }
   }
 
   /**

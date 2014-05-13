@@ -219,18 +219,35 @@ democracyControllers.controller('ElectionCtrl', ['$scope', '$routeParams', 'Elec
     return e;
   }
   
-  function updateElectionName(name) {
+  function validateElectionName(name) {
     if (!name) {
       return "Name is required";
+    } else if (name.length > 40) {
+      return "Name must be no more than 40 characters"
     }
-      
-    ElectionService.saveElection($scope.election);
       
     return true;
   }
   
+  function updateElectionName(name) {
+    ElectionService.saveElection($scope.election).catch(function (response) {
+      $scope.electionError = response.data;
+      
+      //reload the election from the server
+      $scope.election = loadElection();
+    });
+      
+    return true;
+  }
+  
+  function clearError() {
+    $scope.electionError = null;
+  }
+  
+  $scope.clearError = clearError;
   $scope.election = loadElection();
   $scope.updateElectionName = updateElectionName;
+  $scope.validateElectionName = validateElectionName;
 }]);
 
 democracyControllers.controller('AddCandidateCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
