@@ -155,6 +155,10 @@ function candidateModule(Election) {
    */
   function update(req, res) {
     Election.findById(req.params.election, function (err, election) {
+      var c = {},
+        valid = true,
+        errors = [];
+      
       if (err) {
         res.send(500, {
           message: 'Unable to save candidate',
@@ -173,23 +177,40 @@ function candidateModule(Election) {
         
         if (candidate) {
           if (typeof req.body.name !== 'undefined') {
-            candidate.name = req.body.name;
+            if (req.body.name === "") {
+              valid = false;
+              errors.push('Name is required.');
+            }
+            else if (req.body.name.toString().length > 40) {
+              valid = false;
+              errors.push('Name must be no more than 40 characters.')
+            } else {
+              candidate.name = req.body.name;
+            }
           }
           
           if (typeof req.body.description !== 'undefined') {
             candidate.description = req.body.description;
           }
           
-          election.save(function (err) {
-            if (err) {
-              res.send(500, {
-                message: 'Unable to save candidate',
-                errors: [err]
-              });
-            } else {
-              res.send(200, candidate);
-            }
-          });
+          if (valid) {
+            election.save(function (err) {
+              if (err) {
+                res.send(500, {
+                  message: 'Unable to save candidate',
+                  errors: [err]
+                });
+              } else {
+                res.send(200, candidate);
+              }
+            });
+          } else {
+            res.set('Content-Type', 'application/json');
+            res.send(400, {
+              message: 'Unable to update candidate.',
+              userErrors: errors
+            });
+          }
         } else {
           res.send(404, {
             message: 'Unable to find candidate.',
@@ -205,6 +226,14 @@ function candidateModule(Election) {
     });
   }
 
+  /**
+   * Deletes the given candidate.
+   * - election: The id of the election
+   * - candidate: The id of the candidate to delete
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function destroy(req, res) {
     Election.findById(req.params.election, function (err, election) {
       var i;

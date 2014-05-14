@@ -104,8 +104,7 @@ democracyControllers.controller('AddElectionCtrl', ['$scope', '$modalInstance', 
       function (error) {
         $scope.error = error;
       }
-    )
-    
+    );
   };
 
   $scope.cancel = function () {
@@ -223,7 +222,7 @@ democracyControllers.controller('ElectionCtrl', ['$scope', '$routeParams', 'Elec
     if (!name) {
       return "Name is required";
     } else if (name.length > 40) {
-      return "Name must be no more than 40 characters"
+      return "Name must be no more than 40 characters";
     }
       
     return true;
@@ -250,17 +249,29 @@ democracyControllers.controller('ElectionCtrl', ['$scope', '$routeParams', 'Elec
   $scope.validateElectionName = validateElectionName;
 }]);
 
-democracyControllers.controller('AddCandidateCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+democracyControllers.controller('AddCandidateCtrl', ['$scope', '$modalInstance', 'CandidateService', function ($scope, $modalInstance, CandidateService) {
   'use strict';
   
   $scope.newCandidateName = '';
   $scope.newCandidateDescription = '';
 
   $scope.ok = function () {
-    $modalInstance.close({
-      name: this.newCandidateName,
-      description: this.newCandidateDescription
-    });
+    var self = this;
+    
+    CandidateService.validateCandidate({
+      name: self.newCandidateName,
+      description: self.newCandidateDescription
+    }).then(
+      function () {
+        $modalInstance.close({
+          name: self.newCandidateName,
+          description: self.newCandidateDescription
+        });
+      },
+      function (error) {
+        $scope.error = error;
+      }
+    );
   };
 
   $scope.cancel = function () {
@@ -341,19 +352,45 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
   }
   
   function updateCandidateName(candidate, name) {
+    candidate.name = name;
+    
+    CandidateService.saveCandidate(candidate).catch(function (response) {
+      $scope.candidatesError = response.data;
+      
+      //reload the candidates from the server
+      $scope.candidates = loadCandidates();
+    });
+      
+    return true;
+  }
+  
+  function validateCandidateName(candidate, name) {
     if (!name) {
       return "Name is required";
+    } else if (name.length > 40) {
+      return "Name must be no more than 40 characters";
     }
-    
-    candidate.name = name;
-    candidate.$save();
       
     return true;
   }
   
   function updateCandidateDescription(candidate, description) {
     candidate.description = description;
-    candidate.$save();
+    
+    CandidateService.saveCandidate(candidate).catch(function (response) {
+      $scope.candidatesError = response.data;
+      
+      //reload the candidates from the server
+      $scope.candidates = loadCandidates();
+    });
+      
+    return true;
+  }
+  
+  function validateCandidateDescription(candidate, description) {
+    if (description && description.length > 10000) {
+      return "Description must be no more than 10000 characters";
+    }
       
     return true;
   }
@@ -369,6 +406,8 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
   $scope.showRemoveCandidates = showRemoveCandidates;
   $scope.updateCandidateDescription = updateCandidateDescription;
   $scope.updateCandidateName = updateCandidateName;
+  $scope.validateCandidateDescription = validateCandidateDescription;
+  $scope.validateCandidateName = validateCandidateName;
 }]);
 
 /**

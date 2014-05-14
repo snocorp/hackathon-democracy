@@ -13,12 +13,12 @@
   </alert>
   <div ng-repeat="candidate in candidates" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" editable-text="candidate.name" onbeforesave="updateCandidateName(candidate, $data)">
+      <h3 class="panel-title" editable-text="candidate.name" onbeforesave="validateCandidateName(candidate, $data)" onaftersave="updateCandidateName(candidate, $data)">
         <span class="glyphicon glyphicon-pencil pull-right"></span> {{candidate.name}}
       </h3>
     </div>
     <div class="panel-body">
-      <p editable-textarea="candidate.description" e-rows="3" e-cols="50" onbeforesave="updateCandidateDescription(candidate, $data)"><span class="glyphicon glyphicon-pencil pull-right"></span> {{candidate.description}}</p>
+      <p editable-textarea="candidate.description" e-rows="3" e-cols="50" onbeforesave="validateCandidateDescription(candidate, $data)" onaftersave="updateCandidateDescription(candidate, $data)"><span class="glyphicon glyphicon-pencil pull-right"></span> {{candidate.description}}</p>
     </div>
   </div>
 </div>

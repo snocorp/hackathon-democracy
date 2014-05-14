@@ -196,6 +196,49 @@ democracyServices.factory('CandidateService', ['Candidate', '$q',
         }
       }
     }
+    
+    /**
+     * Saves the given candidate.
+     * 
+     * @param {Candidate} - candidate to be saved
+     */
+    function saveCandidate(candidate) {
+      return candidate.$save();
+    }
+    
+    /**
+     * Validates the properties of the given candidate.
+     */
+    function validateCandidate(candidate) {
+      var error = {messages: []},
+        deferred = $q.defer();
+      
+      
+      if (!candidate) {
+        error.messages.push('Candidate could not be validated');
+      } else {
+        if (!candidate.name) {
+          error.messages.push('Name is required');
+          error.name = true;
+        } else if (candidate.name.length > 40) {
+          error.messages.push('Name cannot be more than 40 characters');
+          error.name = true;
+        }
+        
+        if (candidate.description.length > 10000) {
+          error.messages.push('Description cannot be more than 10000 characters');
+          error.description = true;
+        }
+      }
+      
+      if (error.messages.length > 0) {
+        deferred.reject(error);
+      } else {
+        deferred.resolve();
+      }
+      
+      return deferred.promise;
+    }
 
     function clearSoftDelete(candidates) {
       var i;
@@ -208,7 +251,9 @@ democracyServices.factory('CandidateService', ['Candidate', '$q',
       addCandidate: addCandidate,
       clearSoftDelete: clearSoftDelete,
       getCandidates: getCandidates,
-      removeCandidates: removeCandidates
+      removeCandidates: removeCandidates,
+      saveCandidate: saveCandidate,
+      validateCandidate: validateCandidate
     };
   }]);
 
