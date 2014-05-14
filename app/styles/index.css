@@ -68,6 +68,10 @@ p.editable-click:hover {
   border: 1px solid #ccc;
 }
 
+p.editable-click.editable-empty:hover {
+  min-height: 24px;
+}
+
 p.editable-click span {
   display: none;
 }
