@@ -413,17 +413,29 @@ democracyControllers.controller('CandidatesCtrl', ['$scope', '$routeParams', '$m
 /**
  * Add Category controller
  */
-democracyControllers.controller('AddCategoryCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+democracyControllers.controller('AddCategoryCtrl', ['$scope', '$modalInstance', 'CategoryService', function ($scope, $modalInstance, CategoryService) {
   'use strict';
   
   $scope.newCategoryName = '';
   $scope.newCategoryDescription = '';
 
   $scope.ok = function () {
-    $modalInstance.close({
-      name: this.newCategoryName,
-      description: this.newCategoryDescription
-    });
+    var self = this;
+    
+    CategoryService.validateCategory({
+      name: self.newCategoryName,
+      description: self.newCategoryDescription
+    }).then(
+      function () {
+        $modalInstance.close({
+          name: self.newCategoryName,
+          description: self.newCategoryDescription
+        });
+      },
+      function (error) {
+        $scope.error = error;
+      }
+    );
   };
 
   $scope.cancel = function () {

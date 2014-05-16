@@ -4,15 +4,23 @@
 </div>
 <div class="modal-body">
   <form role="form">
-    <div class="form-group">
+    <div ng-class="'form-group ' + (error && error.name ? 'has-error' : '')">
       <label for="addCategoryName">Name</label>
+      <p ng-bind="newCategoryName.length" ng-class="'pull-right ' + (newCategoryName.length > 40 ? 'text-danger' : 'text-muted')"></p>
       <input type="text" class="form-control" id="addCategoryName" ng-model="newCategoryName" placeHolder="Enter name"/>
     </div>
-    <div class="form-group">
+    <div ng-class="'form-group ' + (error && error.description ? 'has-error' : '')">
       <label for="addCategoryDescription">Description</label>
+      <p ng-bind="newCategoryDescription.length" ng-class="'pull-right ' + (newCategoryDescription.length > 10000 ? 'text-danger' : 'text-muted')"></p>
       <textarea class="form-control" id="addCategoryDescription" ng-model="newCategoryDescription" rows="3"></textarea>
     </div>
   </form>
+  <div class="alert alert-danger" ng-show="error && error.messages.length > 0">
+    <ul ng-show="error.messages.length > 1">
+      <li ng-repeat="error in error.messages">{{error}}</li>
+    </ul>
+    <span ng-show="error.messages.length === 1">{{error.messages[0]}}</span>
+  </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-primary" ng-click="ok()">Add</button>

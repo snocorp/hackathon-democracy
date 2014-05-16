@@ -148,7 +148,8 @@ function candidateModule(Election) {
   /**
    * Updates the given candidate if parameters are provided.
    * - election: The id of the election to be updated
-   * - name: The new name of the election
+   * - name: The new name of the candidate
+   * - description: The new description of the candidate
    * 
    * @param {Request} req - http request
    * @param {Response} res - http response
@@ -190,7 +191,12 @@ function candidateModule(Election) {
           }
           
           if (typeof req.body.description !== 'undefined') {
-            candidate.description = req.body.description;
+            if (req.body.description.toString().length > 10000) {
+              valid = false;
+              errors.push('Name must be no more than 10000 characters.')
+            } else {
+              candidate.description = req.body.description;
+            }
           }
           
           if (valid) {

@@ -342,6 +342,40 @@ democracyServices.factory('CategoryService', ['Category', '$q',
         }
       }
     }
+    
+    /**
+     * Validates the properties of the given category.
+     */
+    function validateCategory(category) {
+      var error = {messages: []},
+        deferred = $q.defer();
+      
+      
+      if (!category) {
+        error.messages.push('Category could not be validated');
+      } else {
+        if (!category.name) {
+          error.messages.push('Name is required');
+          error.name = true;
+        } else if (category.name.length > 40) {
+          error.messages.push('Name cannot be more than 40 characters');
+          error.name = true;
+        }
+        
+        if (category.description.length > 10000) {
+          error.messages.push('Description cannot be more than 10000 characters');
+          error.description = true;
+        }
+      }
+      
+      if (error.messages.length > 0) {
+        deferred.reject(error);
+      } else {
+        deferred.resolve();
+      }
+      
+      return deferred.promise;
+    }
 
     function clearSoftDelete(categories) {
       var i;
@@ -355,7 +389,8 @@ democracyServices.factory('CategoryService', ['Category', '$q',
       clearSoftDelete: clearSoftDelete,
       getCategories: getCategories,
       getCategory: getCategory,
-      removeCategories: removeCategories
+      removeCategories: removeCategories,
+      validateCategory: validateCategory
     };
   }]);
 
