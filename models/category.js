@@ -155,6 +155,10 @@ function categoryModule(Election) {
    */
   function update(req, res) {
     Election.findById(req.params.election, function (err, election) {
+      var c = {},
+        valid = true,
+        errors = [];
+      
       if (err) {
         res.send(500, {
           message: 'Unable to save category',
