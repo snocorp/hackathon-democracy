@@ -13,12 +13,12 @@
   </alert>
   <div ng-repeat="category in categories" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" editable-text="category.name" onbeforesave="updateCategoryName(category, $data)">
+      <h3 class="panel-title" editable-text="category.name" onbeforesave="validateCategoryName(category, $data)" onaftersave="updateCategoryName(category, $data)">
         <span class="glyphicon glyphicon-pencil pull-right"></span> {{category.name}}
       </h3>
     </div>
     <div class="panel-body">
-      <p editable-textarea="category.description" e-rows="3" e-cols="50" onbeforesave="updateCategoryDescription(category, $data)"><span class="glyphicon glyphicon-pencil pull-right"></span> {{category.description}}</p>
+      <p editable-textarea="category.description" e-rows="3" e-cols="50" onbeforesave="validateCategoryDescription(category, $data)" onaftersave="updateCategoryDescription(category, $data)"><span class="glyphicon glyphicon-pencil pull-right"></span> {{category.description}}</p>
     </div>
   </div>
 </div>

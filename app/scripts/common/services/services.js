@@ -203,7 +203,16 @@ democracyServices.factory('CandidateService', ['Candidate', '$q',
      * @param {Candidate} - candidate to be saved
      */
     function saveCandidate(candidate) {
-      return candidate.$save();
+      var electionId = candidate.electionId,
+        promise;
+      
+      promise = candidate.$save();
+      
+      promise.then(function (c) {
+        c.electionId = electionId;
+      });
+      
+      return promise;
     }
     
     /**
@@ -344,6 +353,24 @@ democracyServices.factory('CategoryService', ['Category', '$q',
     }
     
     /**
+     * Saves the given category.
+     * 
+     * @param {Category} - category to be saved
+     */
+    function saveCategory(category) {
+      var electionId = category.electionId,
+        promise;
+      
+      promise = category.$save();
+      
+      promise.then(function (c) {
+        c.electionId = electionId;
+      });
+      
+      return promise;
+    }
+    
+    /**
      * Validates the properties of the given category.
      */
     function validateCategory(category) {
@@ -390,6 +417,7 @@ democracyServices.factory('CategoryService', ['Category', '$q',
       getCategories: getCategories,
       getCategory: getCategory,
       removeCategories: removeCategories,
+      saveCategory: saveCategory,
       validateCategory: validateCategory
     };
   }]);

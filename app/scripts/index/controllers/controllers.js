@@ -516,19 +516,45 @@ democracyControllers.controller('CategoriesCtrl', ['$scope', '$routeParams', '$m
   }
   
   function updateCategoryName(category, name) {
+    category.name = name;
+    
+    CategoryService.saveCategory(category).catch(function (response) {
+      $scope.categoriesError = response.data;
+      
+      //reload the categories from the server
+      $scope.categories = loadCategories();
+    });
+      
+    return true;
+  }
+  
+  function validateCategoryName(category, name) {
     if (!name) {
       return "Name is required";
+    } else if (name.length > 40) {
+      return "Name must be no more than 40 characters";
     }
-    
-    category.name = name;
-    category.$save();
       
     return true;
   }
   
   function updateCategoryDescription(category, description) {
     category.description = description;
-    category.$save();
+    
+    CategoryService.saveCategory(category).catch(function (response) {
+      $scope.categoriesError = response.data;
+      
+      //reload the candidates from the server
+      $scope.categories = loadCategories();
+    });
+      
+    return true;
+  }
+  
+  function validateCategoryDescription(category, description) {
+    if (description && description.length > 10000) {
+      return "Description must be no more than 10000 characters";
+    }
       
     return true;
   }
@@ -544,6 +570,8 @@ democracyControllers.controller('CategoriesCtrl', ['$scope', '$routeParams', '$m
   $scope.showRemoveCategories = showRemoveCategories;
   $scope.updateCategoryDescription = updateCategoryDescription;
   $scope.updateCategoryName = updateCategoryName;
+  $scope.validateCategoryDescription = validateCategoryDescription;
+  $scope.validateCategoryName = validateCategoryName;
 }]);
 
 democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
