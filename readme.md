@@ -34,3 +34,7 @@ In addition, the system can be started in development mode
 or in production mode
 
 `grunt server:dist`
+
+### Troubleshooting
+
+If you get the error `connection error: [Error: failed to connect to [localhost:27017]]` then the server cannot connect to mongo. Chewck that the server is started and accessible from the server's machine.
