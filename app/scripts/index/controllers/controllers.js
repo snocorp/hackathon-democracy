@@ -281,6 +281,18 @@ democracyControllers.controller('AddCandidateCtrl', ['$scope', '$modalInstance',
 
 democracyControllers.controller('RemoveCandidatesCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
+  
+  $scope.selectAll = function() {
+    $scope.candidates.forEach(function (c) {
+      c.softDelete = true;
+    });
+  };
+  
+  $scope.selectNone = function() {
+    $scope.candidates.forEach(function (c) {
+      c.softDelete = false;
+    });
+  };
 
   $scope.ok = function () {
     $modalInstance.close($scope.candidates);
@@ -445,6 +457,18 @@ democracyControllers.controller('AddCategoryCtrl', ['$scope', '$modalInstance', 
 
 democracyControllers.controller('RemoveCategoriesCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
+  
+  $scope.selectAll = function() {
+    $scope.categories.forEach(function (c) {
+      c.softDelete = true;
+    });
+  };
+  
+  $scope.selectNone = function() {
+    $scope.categories.forEach(function (c) {
+      c.softDelete = false;
+    });
+  };
 
   $scope.ok = function () {
     $modalInstance.close($scope.categories);
@@ -581,30 +605,57 @@ democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', fu
   $scope.newVoterEmail = '';
   $scope.newVoters = [];
   
+  function validateEmail(email) { 
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+  
   $scope.addNewVoter = function () {
-    var newVoter = {
-      name: this.newVoterName,
-      email: this.newVoterEmail
-    };
-    
-    this.newVoters.push(newVoter);
-    
-    this.newVoterName = '';
-    this.newVoterEmail = '';
+    if (validateEmail(this.newVoterEmail)) {
+      var newVoter = {
+        name: this.newVoterName,
+        email: this.newVoterEmail
+      };
+
+      this.newVoters.push(newVoter);
+
+      this.newVoterName = '';
+      this.newVoterEmail = '';
+    } else {
+      $scope.error = {messages: ['That email doesn\'t look right.']};
+    }
   };
 
   $scope.ok = function () {
+    $scope.error = null;
+    
     $modalInstance.close(this.newVoters);
   };
 
   $scope.cancel = function () {
+    $scope.error = null;
+    
     $modalInstance.dismiss('cancel');
   };
+  
+  $scope.error = null;
   
 }]);
 
 democracyControllers.controller('RemoveVotersCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
   'use strict';
+  
+  $scope.selectAll = function() {
+    $scope.voters.forEach(function (v) {
+      v.softDelete = true;
+    });
+  };
+  
+  $scope.selectNone = function() {
+    $scope.voters.forEach(function (v) {
+      v.softDelete = false;
+    });
+  };
 
   $scope.ok = function () {
     $modalInstance.close($scope.voters);

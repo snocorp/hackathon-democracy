@@ -3,11 +3,14 @@
   <h4 class="modal-title" id="removeVotersLabel">Remove Voters</h4>
 </div>
 <div class="modal-body">
+  <a href="javascript:void(0)" ng-click="selectAll()">Select all</a> | <a href="javascript:void(0)" ng-click="selectNone()">Select none</a>
   <from role="form">
     <div class="checkbox" ng-repeat="voter in voters">
       <label>
         <input type="checkbox" ng-model="voter.softDelete" name="c{{voter._id}}"/>
-        {{voter._id}}
+        <span ng-show="voter.name">{{voter.name}}</span>
+        <span ng-show="!voter.name">{{voter._id}}</span>
+        <span ng-show="voter.email"> ({{voter.email}})</span>
       </label>
     </div>
   </from>

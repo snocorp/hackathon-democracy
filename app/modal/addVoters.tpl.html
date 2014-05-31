@@ -12,6 +12,12 @@
       <label for="addVoterName">Name</label>
       <input type="text" class="form-control" id="addVoterName" ng-model="newVoterName" placeHolder="Enter name"/>
     </div>
+    <div class="alert alert-danger" ng-show="error && error.messages.length > 0">
+      <ul ng-show="error.messages.length > 1">
+        <li ng-repeat="error in error.messages">{{error}}</li>
+      </ul>
+      <span ng-show="error.messages.length === 1">{{error.messages[0]}}</span>
+    </div>
     <button type="submit" class="btn btn-default">Add</button>
   </form>
 </div>
