@@ -598,32 +598,31 @@ democracyControllers.controller('CategoriesCtrl', ['$scope', '$routeParams', '$m
   $scope.validateCategoryName = validateCategoryName;
 }]);
 
-democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', 'VoterService', function ($scope, $modalInstance, VoterService) {
   'use strict';
   
   $scope.newVoterName = '';
   $scope.newVoterEmail = '';
   $scope.newVoters = [];
   
-  function validateEmail(email) { 
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  }
-  
   $scope.addNewVoter = function () {
-    if (validateEmail(this.newVoterEmail)) {
-      var newVoter = {
+    var self = this,
+      newVoter = {
         name: this.newVoterName,
         email: this.newVoterEmail
       };
+    
+    VoterService.validateVoter(newVoter).then(
+      function () {
+        self.newVoters.push(newVoter);
 
-      this.newVoters.push(newVoter);
-
-      this.newVoterName = '';
-      this.newVoterEmail = '';
-    } else {
-      $scope.error = {messages: ['That email doesn\'t look right.']};
-    }
+        self.newVoterName = '';
+        self.newVoterEmail = '';
+      },
+      function (error) {
+        $scope.error = error;
+      }
+    );
   };
 
   $scope.ok = function () {

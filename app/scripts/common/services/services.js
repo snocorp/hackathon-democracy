@@ -537,6 +537,49 @@ democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
         }
       }
     }
+  
+    function validateEmail(email) { 
+      var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    }
+    
+    /**
+     * Validates the properties of the given voter.
+     */
+    function validateVoter(voter) {
+      var error = {messages: []},
+        deferred = $q.defer();
+      
+      
+      if (!voter) {
+        error.messages.push('Voter could not be validated');
+      } else {
+        if (!voter.name) {
+          error.messages.push('Name is required');
+          error.name = true;
+        } else if (voter.name.length > 40) {
+          error.messages.push('Name cannot be more than 40 characters');
+          error.name = true;
+        }
+        
+        
+        if (!voter.email) {
+          error.messages.push('Email is required');
+          error.email = true;
+        } else if (!validateEmail(voter.email)) {
+          error.messages.push('Email is invalid');
+          error.email = true;
+        }
+      }
+      
+      if (error.messages.length > 0) {
+        deferred.reject(error);
+      } else {
+        deferred.resolve();
+      }
+      
+      return deferred.promise;
+    }
 
     function clearSoftDelete(voters) {
       var i;
@@ -555,6 +598,7 @@ democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
       getCurrentVoter: getCurrentVoter,
       getVoters: getVoters,
       removeVoters: removeVoters,
+      validateVoter: validateVoter,
       vote: vote
     };
   }]);
