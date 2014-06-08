@@ -557,7 +557,7 @@ democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
         if (!voter.name) {
           error.messages.push('Name is required');
           error.name = true;
-        } else if (voter.name.length > 40) {
+        } else if (voter.name.length > 100) {
           error.messages.push('Name cannot be more than 40 characters');
           error.name = true;
         }
@@ -565,6 +565,9 @@ democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
         
         if (!voter.email) {
           error.messages.push('Email is required');
+          error.email = true;
+        } else if (voter.email.length > 1000) {
+          error.messages.push('Email cannot be more than 1000 characters');
           error.email = true;
         } else if (!validateEmail(voter.email)) {
           error.messages.push('Email is invalid');

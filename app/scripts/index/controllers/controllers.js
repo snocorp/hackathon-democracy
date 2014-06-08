@@ -618,6 +618,8 @@ democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', 'V
 
         self.newVoterName = '';
         self.newVoterEmail = '';
+        
+        $scope.error = null;
       },
       function (error) {
         $scope.error = error;

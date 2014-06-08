@@ -2,14 +2,16 @@
   <button type="button" class="close" ng-click="clearNewVoters()" data-dismiss="modal" aria-hidden="true">&times;</button>
   <h4 class="modal-title" id="addVotersLabel">Add Voters</h4>
 </div>
-<div class="modal-body">
-  <form role="form" ng-submit="addNewVoter()">
+<div class="modal-body" novalidate>
+  <form name="addVoterForm" role="form" ng-submit="addNewVoter()">
     <div class="form-group">
       <label for="addVoterEmail">Email</label>
+      <p ng-bind="addVoterForm.$valid ? newVoterEmail.length : '&nbsp;'" ng-class="'pull-right ' + (newVoterEmail.length > 1000 ? 'text-danger' : 'text-muted')"></p>
       <input type="email" class="form-control" id="addVoterEmail" ng-model="newVoterEmail" placeHolder="Enter email address"/>
     </div>
     <div class="form-group">
       <label for="addVoterName">Name</label>
+      <p ng-bind="newVoterName.length" ng-class="'pull-right ' + (newVoterName.length > 100 ? 'text-danger' : 'text-muted')"></p>
       <input type="text" class="form-control" id="addVoterName" ng-model="newVoterName" placeHolder="Enter name"/>
     </div>
     <div class="alert alert-danger" ng-show="error && error.messages.length > 0">
