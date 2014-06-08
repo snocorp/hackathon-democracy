@@ -37,4 +37,4 @@ or in production mode
 
 ### Troubleshooting
 
-If you get the error `connection error: [Error: failed to connect to [localhost:27017]]` then the server cannot connect to mongo. Chewck that the server is started and accessible from the server's machine.
+If you get the error `connection error: [Error: failed to connect to [localhost:27017]]` then the server cannot connect to mongo. Check that the server is started and accessible from the server's machine.
