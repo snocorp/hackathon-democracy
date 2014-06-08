@@ -7,7 +7,7 @@
     <div ng-class="'form-group ' + (error && error.name ? 'has-error' : '')">
       <label for="addCandidateName">Name</label>
       <p ng-bind="newCandidateName.length" ng-class="'pull-right ' + (newCandidateName.length > 40 ? 'text-danger' : 'text-muted')"></p>
-      <input type="text" class="form-control" id="addCandidateName" ng-model="newCandidateName" placeHolder="Enter name"/>
+      <input type="text" class="form-control" id="addCandidateName" ng-model="newCandidateName" placeHolder="Enter name" xng-focus="true"/>
     </div>
     <div ng-class="'form-group ' + (error && error.description ? 'has-error' : '')">
       <label for="addCandidateDescription">Description</label>

@@ -598,7 +598,7 @@ democracyControllers.controller('CategoriesCtrl', ['$scope', '$routeParams', '$m
   $scope.validateCategoryName = validateCategoryName;
 }]);
 
-democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', 'VoterService', function ($scope, $modalInstance, VoterService) {
+democracyControllers.controller('AddVotersCtrl', ['$scope', '$timeout', '$modalInstance', 'VoterService', function ($scope, $timeout, $modalInstance, VoterService) {
   'use strict';
   
   $scope.newVoterName = '';
@@ -624,7 +624,10 @@ democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', 'V
       function (error) {
         $scope.error = error;
       }
-    );
+    )['finally'](function () {
+      console.log('focus');
+      $scope.focusEmail = true;
+    });
   };
 
   $scope.ok = function () {
@@ -638,9 +641,23 @@ democracyControllers.controller('AddVotersCtrl', ['$scope', '$modalInstance', 'V
     
     $modalInstance.dismiss('cancel');
   };
+
+  $scope.close = function () {
+    $scope.error = null;
+    
+    $modalInstance.dismiss('close');
+  };
+  
+  $scope.emailLostFocus = function () {
+    $scope.focusEmail = false;
+  };
+  
+  $scope.removeNewVoter = function (index) {
+    $scope.newVoters.splice(index, 1);
+  }
   
   $scope.error = null;
-  
+  $scope.focusEmail = true;
 }]);
 
 democracyControllers.controller('RemoveVotersCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {

@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <button type="button" class="close" ng-click="clearNewVoters()" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <button type="button" class="close" ng-click="close()" data-dismiss="modal" aria-hidden="true">&times;</button>
   <h4 class="modal-title" id="addVotersLabel">Add Voters</h4>
 </div>
 <div class="modal-body" novalidate>
@@ -7,7 +7,7 @@
     <div class="form-group">
       <label for="addVoterEmail">Email</label>
       <p ng-bind="addVoterForm.$valid ? newVoterEmail.length : '&nbsp;'" ng-class="'pull-right ' + (newVoterEmail.length > 1000 ? 'text-danger' : 'text-muted')"></p>
-      <input type="email" class="form-control" id="addVoterEmail" ng-model="newVoterEmail" placeHolder="Enter email address"/>
+      <input type="email" class="form-control" id="addVoterEmail" ng-model="newVoterEmail" placeHolder="Enter email address" xng-focus="focusEmail" ng-blur="emailLostFocus()"/>
     </div>
     <div class="form-group">
       <label for="addVoterName">Name</label>
@@ -30,6 +30,7 @@
       <p>Registration email will be sent to the following new voters:</p>
       <ul class="list-group">
         <li ng-repeat="voter in newVoters" class="list-group-item">
+          <button class="close" ng-click="removeNewVoter($index)">&ndash;</button>
           {{voter.name}} ({{voter.email}})
         </li>
       </ul>

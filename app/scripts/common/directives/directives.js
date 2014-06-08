@@ -6,14 +6,19 @@ var democracyDirectives = angular.module('democracyDirectives', []);
 democracyDirectives.directive('xngFocus', function () {
   'use strict';
   
-  return function (scope, element, attrs) {
-    scope.$watch(attrs.xngFocus,
-      function (newValue) {
-        if (newValue) {
+  return {
+    restrict: 'A',
+    scope: {
+      focusValue: "=xngFocus"
+    },
+    link: function($scope, $element, attrs) {
+      $scope.$watch("focusValue", function(currentValue, previousValue) {
+        if (currentValue) {
           setTimeout(function () {
-            element[0].focus();
+            $element[0].focus();
           }, 1);
         }
-      }, true);
-  };
+      })
+    }
+  }
 });
