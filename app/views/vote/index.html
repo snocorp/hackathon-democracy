@@ -1,5 +1,6 @@
 <div>
-  <h2>{{election.name}} Candidates</h2>
+  <h2>{{election.name}}</h2>
+  <h3>Candidates</h3>
   <alert ng-show="candidatesError" type="'danger'" close="clearError()">
     <span>{{candidatesError.message}}</span>
     <ul ng-show="candidatesError.userErrors">
@@ -12,6 +13,21 @@
     </div>
     <div class="panel-body">
       <p>{{candidate.description}}</p>
+    </div>
+  </div>
+  
+  <h3>Categories</h3>
+  <div class="row">
+    <div class="col-md-4" ng-repeat="category in categories">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">{{category.name}}</h4>
+        </div>
+        <div class="panel-body">
+          <p>{{category.description}}</p>
+          <a class="btn btn-primary" ng-href="#/elections/{{election._id}}/categories/{{category._id}}">Vote</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

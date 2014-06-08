@@ -50,6 +50,11 @@ voteControllers.controller('IndexCtrl', ['$scope', 'VoterService', 'ElectionServ
                 candidate.electionId = voter.electionId;
               });
               $scope.candidates = election.candidates;
+              
+              election.categories.forEach(function (category) {
+                category.electionId = voter.electionId;
+              });
+              $scope.categories = election.categories;
             },
             function (response) {
               $scope.candidatesError = response.data;
