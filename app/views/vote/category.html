@@ -1,11 +1,19 @@
+<button class="btn btn-info pull-right" ng-click="revealResults = !revealResults" ng-bind="(revealResults ? 'Hide':'Show') + ' Results'"></button>
 <h2>{{category.name}}</h2>
 <p class="lead">{{category.description}}</p>
 <div ng-repeat="candidate in candidates" class="panel panel-default">
   <div class="panel-heading">
-    <h4 class="panel-title">{{candidate.name}} (<span ng-bind="candidate.voteCount"></span>)</h4>
+    <h4 class="panel-title">
+      {{candidate.name}}
+    </h4>
   </div>
   <div class="panel-body">
-    <button ng-class="'pull-right btn ' + ((myVote && myVote.candidateId === candidate._id) ? 'btn-primary' : 'btn-default')" ng-disabled="myVote && myVote.candidateId === candidate._id" ng-click="vote(candidate)">Vote for {{candidate.name}}</button>
-    <p>{{candidate.description}}</p>
+    <button ng-hide="revealResults" ng-class="'pull-right btn ' + ((myVote && myVote.candidateId === candidate._id) ? 'btn-primary' : 'btn-default')" ng-disabled="myVote && myVote.candidateId === candidate._id" ng-click="vote(candidate)">Vote for {{candidate.name}}</button>
+     <div class="progress" ng-show="revealResults">
+      <div class="progress-bar" role="progressbar" ng-style="{width: (totalVotes == 0 ? 0 : (100 * candidate.voteCount / totalVotes)) + '%'}">
+        {{candidate.voteCount > 0 ? candidate.voteCount : ''}}
+      </div>
+    </div>
+    <p ng-hide="revealResults">{{candidate.description}}</p>
   </div>
 </div>

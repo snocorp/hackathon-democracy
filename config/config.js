@@ -7,7 +7,8 @@ var rootConfig = {
   cookie_secret: 'not very secret',
   smtp_service: null,
   smtp_user: null,
-  smtp_password: null
+  smtp_password: null,
+  voter_links: false
 };
 
 try {

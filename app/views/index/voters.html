@@ -16,6 +16,7 @@
       <span ng-show="voter.name">{{voter.name}}</span>
       <span ng-show="!voter.name">{{voter._id}}</span>
       <span ng-show="voter.email"> ({{voter.email}})</span>
+      <a ng-href="{{voter.link}}" ng-show="voter.link">[login]</a>
     </li>
   </ul>
 </div>

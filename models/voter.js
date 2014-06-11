@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
   nodemailer = require('nodemailer'),
+  lodash = require('lodash'),
   config = require('../config/config');
 
 function voterModule(app, Election) {
@@ -16,6 +17,8 @@ function voterModule(app, Election) {
    */
   function index(req, res) {
     Election.findById(req.params.election, function (err, election) {
+      var i, voters;
+      
       res.set('Content-Type', 'application/json');
       if (err) {
         res.send(500, {
@@ -23,7 +26,27 @@ function voterModule(app, Election) {
           errors: [err]
         });
       } else if (election) {
-        res.send(200, election.voters);
+        if (config.voter_links) {
+          voters = [];
+          for (i = 0; i < election.voters.length; i += 1) {
+            voters.push({
+                _id: election.voters[i]._id,
+                link: '/election/' + election._id + '/vote/' + election.voters[i]._id
+            });
+              
+            if (election.voters[i].name) {
+              voters[i].name = election.voters[i].name;
+            }
+            
+            if (election.voters[i].email) {
+              voters[i].email = election.voters[i].email;
+            }
+          }
+        } else {
+          voters = election.voters;
+        }
+        
+        res.send(200, voters);
       } else {
         res.send(404, {
           message: 'Unable to find election.',

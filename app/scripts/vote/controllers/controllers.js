@@ -76,6 +76,8 @@ voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'Candidate
   'use strict';
   
   function loadVotes() {
+    $scope.totalVotes = 0;
+    
     VoterService.getCurrentVoter().then(
       function (v) {
         v.$promise.then(function (voter) {
@@ -101,6 +103,8 @@ voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'Candidate
                       if (v._id === voter._id) {
                         $scope.myVote = v.votes[j];
                       }
+                      
+                      $scope.totalVotes += 1;
 
                       break;
                     }
@@ -150,6 +154,8 @@ voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'Candidate
   $scope.category = loadCategory();
   $scope.myVote = null;
   $scope.vote = vote;
+  $scope.revealResults = false;
+  $scope.totalVotes = 0;
   
   loadCandidates();
 }]);
