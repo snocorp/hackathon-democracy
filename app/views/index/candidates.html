@@ -5,6 +5,7 @@
     <button type="button" class="btn btn-default navbar-btn" title="Create a new candidate" ng-click="showAddCandidate()"><span class="glyphicon glyphicon-plus"></span> Add Candidate</button>
     <button type="button" class="btn btn-default navbar-btn" title="Remove one or more candidates"  ng-click="showRemoveCandidates()"><span class="glyphicon glyphicon-minus"></span> Remove Candidates</button>
   </div>
+  <a class="btn btn-default" href="#/elections/{{electionId}}/results">Results</a>
   <alert ng-show="candidatesError" type="'danger'" close="clearError()">
     <span>{{candidatesError.message}}</span>
     <ul ng-show="candidatesError.userErrors">

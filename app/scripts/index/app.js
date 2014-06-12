@@ -28,6 +28,10 @@
           templateUrl: 'views/index/voters.html',
           controller: 'VotersCtrl'
         })
+        .when('/elections/:electionId/results', {
+          templateUrl: 'views/index/results.html',
+          controller: 'ResultsCtrl'
+        })
         .when('/elections/:electionId', {
           templateUrl: 'views/index/election.html',
           controller: 'ElectionCtrl'

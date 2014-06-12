@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose'),
   nodemailer = require('nodemailer'),
-  lodash = require('lodash'),
   config = require('../config/config');
 
 function voterModule(app, Election) {

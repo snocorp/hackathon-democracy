@@ -1,0 +1,32 @@
+<div>
+  <a href="#/elections/{{electionId}}" class="pull-right">Back to election</a>
+  <h2>Results</h2>
+  <alert ng-show="candidatesError" type="'danger'" close="clearError()">
+    <span>{{candidatesError.message}}</span>
+    <ul ng-show="candidatesError.userErrors">
+      <li ng-repeat="error in candidatesError.userErrors">{{error}}</li>
+    </ul>
+  </alert>
+  <div ng-show="categories.length == 0" class="alert alert-info">There are no categories yet.</div>
+  <div ng-show="candidates.length == 0" class="alert alert-info">There are no candidates yet.</div>
+  <div ng-repeat="category in categories">
+    <h3>{{category.name}}</h3>
+    <div ng-repeat="candidate in candidates" class="row">
+      <div class="col-sm-2">
+        <p>{{candidate.name}}</p>
+      </div>
+      <div class="col-sm-10">
+        <div class="progress">
+          <div class="progress-bar" ng-style="{width: (vaterCount == 0 ? 0 : (100 * category.voteCount[candidate._id] / voterCount)) + '%'}">
+            {{category.voteCount[candidate._id]}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-show="candidates.length > 0" class="row">
+      <div class="col-sm-offset-2 col-sm-10">
+        <span>0</span><span class="pull-right">{{voterCount}}</span>
+      </div>
+    </div>
+  </div>
+</div>

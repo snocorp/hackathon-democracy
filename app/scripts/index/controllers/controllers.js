@@ -755,3 +755,61 @@ democracyControllers.controller('VotersCtrl', ['$scope', '$routeParams', '$modal
   $scope.showAddVoters = showAddVoters;
   $scope.showRemoveVoters = showRemoveVoters;
 }]);
+
+democracyControllers.controller('ResultsCtrl', ['$scope', '$q', '$routeParams', 'ElectionService', function ($scope, $q, $routeParams, ElectionService) {
+  'use strict';
+  
+  function loadVotes() {
+    var e = ElectionService.getElection($routeParams.electionId);
+    
+    e.$promise.then(
+      function (election) {
+        var categoriesById = {};
+        
+        $scope.voterCount = election.voters.length;
+        $scope.categories = election.categories;
+        $scope.candidates = election.candidates;
+        
+        $scope.categories.forEach(function (category) {
+          category.electionId = election._id;
+          category.totalVotes = 0;
+          category.voteCount = {};
+          
+          categoriesById[category._id] = category;
+        });
+        
+        $scope.candidates.forEach(function (candidate) {
+          candidate.electionId = election._id;
+          
+          $scope.categories.forEach(function (category) {
+            category.voteCount[candidate._id] = 0;
+          });
+        });
+        
+        election.voters.forEach(function (v) {
+          v.votes.forEach(function (vote) {
+            var category = categoriesById[vote.categoryId];
+            
+            category.voteCount[vote.candidateId] += 1;
+            category.totalVotes += 1;
+          });
+        });
+      },
+      function (response) {
+        $scope.categoryError = response.data;
+      }
+    );
+  }
+  
+  function clearError() {
+    $scope.candidatesError = null;
+  }
+  
+  $scope.voterCount = 0;
+  $scope.categories = [];
+  $scope.candidates = [];
+  $scope.clearError = clearError;
+  $scope.electionId = $routeParams.electionId;
+  
+  loadVotes();
+}]);

@@ -481,7 +481,7 @@ democracyServices.factory('VoterService', ['Voter', 'VoterInfo', '$q',
         voter.electionId = electionId;
       });
       
-      return v;
+      return v.$promise;
     }
     
     /**

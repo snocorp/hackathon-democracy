@@ -72,73 +72,67 @@ voteControllers.controller('IndexCtrl', ['$scope', 'VoterService', 'ElectionServ
 }]);
 
 
-voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'CandidateService', 'CategoryService', 'VoterService', 'ElectionService', function ($scope, $routeParams, CandidateService, CategoryService, VoterService, ElectionService) {
+voteControllers.controller('CategoryCtrl', ['$scope', '$q', '$routeParams', 'VoterService', 'ElectionService', function ($scope, $q, $routeParams, VoterService, ElectionService) {
   'use strict';
   
   function loadVotes() {
+    
     $scope.totalVotes = 0;
     
     VoterService.getCurrentVoter().then(
-      function (v) {
-        v.$promise.then(function (voter) {
-          var e = ElectionService.getElection($routeParams.electionId);
+      function (voter) {
+        var e = ElectionService.getElection($routeParams.electionId);
+        
+    		e.$promise.then(
+          function (election) {
+            var k;
 
-          e.$promise.then(
-            function (election) {
-              $scope.candidates.forEach(function (candidate) {
-                var i, j, v;
-                
-                candidate.voteCount = 0;
-                
-                for (i = 0; i < election.voters.length; i += 1) {
-                  v = election.voters[i];
-                  for (j = 0; j < v.votes.length; j += 1) {
-                    if (candidate._id === v.votes[j].candidateId && $scope.category._id === v.votes[j].categoryId) {
-                      if (candidate.voteCount) {
-                        candidate.voteCount += 1;
-                      } else {
-                        candidate.voteCount = 1;
-                      }
-                      
-                      if (v._id === voter._id) {
-                        $scope.myVote = v.votes[j];
-                      }
-                      
-                      $scope.totalVotes += 1;
+            for (k = 0; k < election.categories.length; k += 1) {
+              if (election.categories[k]._id == $routeParams.categoryId) {
+                $scope.category = election.categories[k];
+                break;
+              }
+            }
 
-                      break;
+            $scope.candidates = election.candidates;
+            for (k = 0; k < $scope.candidates.length; k += 1) {
+              var i, j, v, candidate;
+
+              candidate = $scope.candidates[k];
+              candidate.electionId = election._id;
+              candidate.voteCount = 0;
+
+              for (i = 0; i < election.voters.length; i += 1) {
+                v = election.voters[i];
+                for (j = 0; j < v.votes.length; j += 1) {
+                  if (candidate._id === v.votes[j].candidateId && $scope.category._id === v.votes[j].categoryId) {
+                    if (candidate.voteCount) {
+                      candidate.voteCount += 1;
+                    } else {
+                      candidate.voteCount = 1;
                     }
+
+                    if (v['_id'] === voter['_id']) {
+                      $scope.myVote = v.votes[j];
+                    }
+
+                    $scope.totalVotes += 1;
+
+                    break;
                   }
                 }
-              });
-            },
-            function (response) {
-              $scope.categoryError = response.data;
-            }
-          );
-        });
+              }
+            };
+          },
+          function (response) {
+            $scope.categoryError = response.data;
+          }
+        );
+      },
+      function (response) {
+        $scope.categoryError = response.data;
       }
     );
-  }
-  
-  
-  function loadCandidates() {
-    $scope.candidates = CandidateService.getCandidates($routeParams.electionId);
-    
-    $scope.candidates.$promise.then(loadVotes, function (response) {
-      $scope.categoryError = response.data;
-    });
-  }
-  
-  
-  function loadCategory() {
-    var c = CategoryService.getCategory($routeParams.electionId, $routeParams.categoryId);
-    
-    c.$promise.then(null, function (response) {
-      $scope.categoryError = response.data;
-    });
-    
-    return c;
   }
   
   function vote(candidate) {
@@ -151,11 +145,11 @@ voteControllers.controller('CategoryCtrl', ['$scope', '$routeParams', 'Candidate
   }
   
   $scope.candidates = [];
-  $scope.category = loadCategory();
+  $scope.category = null;
   $scope.myVote = null;
   $scope.vote = vote;
   $scope.revealResults = false;
   $scope.totalVotes = 0;
   
-  loadCandidates();
+  loadVotes();
 }]);
