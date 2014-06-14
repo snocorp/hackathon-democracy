@@ -6,6 +6,9 @@ var express = require('express'),
 
 require('express-resource');
 
+/**
+ * Creates an instance of the application. Returns a promise that resolves to the created app.
+ */
 function createApp() {
   'use strict';
   

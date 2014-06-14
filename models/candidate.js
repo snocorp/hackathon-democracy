@@ -34,6 +34,9 @@ function candidateModule(Election) {
   /**
    * Creates a new candidate for the given election.
    * - election: The id of the election
+   *
+   * @param {Request} req - http request
+   * @param {Response} res - http response
    */
   function create(req, res) {
     Election.findById(req.params.election, function (err, election) {

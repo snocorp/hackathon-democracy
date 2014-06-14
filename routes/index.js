@@ -8,6 +8,7 @@ module.exports = function (app) {
   var deferred = when.defer();
 
   app.get('/', function (req, res, next) {
+    // if the user is signed in as a voter, but not in admin mode
     if (req.session.voterInfo && !req.session.voterInfo.admin) {
       res.render('vote');
     } else {

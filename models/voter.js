@@ -4,6 +4,12 @@ var mongoose = require('mongoose'),
   nodemailer = require('nodemailer'),
   config = require('../config/config');
 
+/*
+ * This module deals with adding a removing voters.
+ * 
+ * @param app The application
+ * @param app Election the mongo election schema
+ */
 function voterModule(app, Election) {
   'use strict';
   
@@ -115,6 +121,13 @@ function voterModule(app, Election) {
     }
   }
   
+  /**
+   * Validates the given email address follows the proper format.
+   * 
+   * @param email Email address
+   * 
+   * @return True if the email follows the proper format, false otherwise
+   */
   function validateEmail(email) { 
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
@@ -123,6 +136,9 @@ function voterModule(app, Election) {
   /**
    * Creates a new voter for the given election.
    * - election: The id of the election
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
    */
   function create(req, res) {
     Election.findById(req.params.election, function (err, election) {
@@ -245,6 +261,14 @@ function voterModule(app, Election) {
     });
   }
 
+  /**
+   * Updates the given voter.
+   * - election: The id of the election
+   * - voter: The id of the voter to update
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function update(req, res) {
     Election.findById(req.params.election, function (err, election) {
       if (err) {
@@ -297,6 +321,14 @@ function voterModule(app, Election) {
     });
   }
 
+  /**
+   * Removed the given voter from the election.
+   * - election: The election id
+   * - voter: The voter id
+   * 
+   * @param {Request} req - http request
+   * @param {Response} res - http response
+   */
   function destroy(req, res) {
     Election.findById(req.params.election, function (err, election) {
       var i;

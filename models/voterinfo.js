@@ -2,9 +2,18 @@
 
 var mongoose = require('mongoose');
 
+/**
+ * Defines the voter information module.
+ * 
+ * @param app The application
+ * @param Election The election mongo schema
+ */
 function voterInfoModule(app, Election) {
   'use strict';
 
+  /**
+   * This registers the current user as the given voter in the session.
+   */
   app.get('/election/:electionId/vote/:voterId', function (req, res, next) {
     
     Election.findById(req.params.electionId, function (err, election) {
@@ -28,6 +37,10 @@ function voterInfoModule(app, Election) {
       res.end();
     });
   });
+  
+  /**
+   * Sets the voter for the given category to the given candidate for the current voter.
+   */
   app.get('/vote/category/:categoryId/candidate/:candidateId', function (req, res, next) {
     res.set('Content-Type', 'application/json');
     if (req.session.voterInfo) {
@@ -94,6 +107,10 @@ function voterInfoModule(app, Election) {
       });
     }
   });
+  
+  /*
+   * Enables admin mode so a registerd voter can still administer the elections.
+   */
   app.get('/admin', function (req, res, next) {
     
     if (req.session.voterInfo) {
@@ -103,6 +120,10 @@ function voterInfoModule(app, Election) {
     res.writeHead(302, {'Location': '/'});
     res.end();
   });
+  
+  /*
+   * Disables admin mode so a registerd voter can vote in an election.
+   */
   app.get('/vote', function (req, res, next) {
     
     if (req.session.voterInfo) {
@@ -112,6 +133,10 @@ function voterInfoModule(app, Election) {
     res.writeHead(302, {'Location': '/'});
     res.end();
   });
+  
+  /*
+   * Logs out the currently registered voter
+   */
   app.get('/logout', function (req, res, next) {
     
     if (req.session.voterInfo) {
@@ -121,6 +146,10 @@ function voterInfoModule(app, Election) {
     res.writeHead(302, {'Location': '/'});
     res.end();
   });
+  
+  /*
+   * Gets the information about the currently registered voter.
+   */
   app.get('/voterinfo', function (req, res, next) {
     res.set('Content-Type', 'application/json');
     if (req.session.voterInfo) {
